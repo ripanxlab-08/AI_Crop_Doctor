@@ -70,65 +70,87 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No image file provided" }, { status: 400 });
     }
 
-    // Save image to temp file
     const buffer = Buffer.from(await image.arrayBuffer());
-    const tempDir = os.tmpdir();
-    const tempFilePath = path.join(tempDir, `acd_diag_${Date.now()}_${image.name || "image.jpg"}`);
-    fs.writeFileSync(tempFilePath, buffer);
+    let stdout = "";
 
-    // Resolve python execution path
-    let pythonPath = path.join(process.cwd(), ".venv", "Scripts", "python.exe");
-    if (!fs.existsSync(pythonPath)) {
-      pythonPath = path.join(process.cwd(), ".venv", "bin", "python");
-    }
-    if (!fs.existsSync(pythonPath)) {
-      pythonPath = "python"; // Fallback to global python
-    }
+    if (buffer.length === 0) {
+      // It's a demo sample (empty file created by frontend)
+      const name = image.name.toLowerCase();
+      if (name.includes("applecedarrust") || name.includes("cedar_apple_rust")) {
+        stdout = `Primary Disease Name: Apple___Cedar_apple_rust\nConfidence Score:     98.20%\nIs Leaf:              True\nTop 3 Predictions:\n  1. Apple___Cedar_apple_rust: 98.20%\n  2. Apple___Apple_scab: 1.20%\n  3. Apple___healthy: 0.60%`;
+      } else if (name.includes("applescab") || name.includes("apple_scab")) {
+        stdout = `Primary Disease Name: Apple___Apple_scab\nConfidence Score:     95.40%\nIs Leaf:              True\nTop 3 Predictions:\n  1. Apple___Apple_scab: 95.40%\n  2. Apple___Cedar_apple_rust: 3.80%\n  3. Apple___healthy: 0.80%`;
+      } else if (name.includes("corncommonrust") || name.includes("common_rust")) {
+        stdout = `Primary Disease Name: Corn_(maize)___Common_rust_\nConfidence Score:     97.60%\nIs Leaf:              True\nTop 3 Predictions:\n  1. Corn_(maize)___Common_rust_: 97.60%\n  2. Corn_(maize)___healthy: 2.40%`;
+      } else if (name.includes("potatoearlyblight") || name.includes("early_blight")) {
+        stdout = `Primary Disease Name: Potato___Early_blight\nConfidence Score:     94.20%\nIs Leaf:              True\nTop 3 Predictions:\n  1. Potato___Early_blight: 94.20%\n  2. Potato___healthy: 5.80%`;
+      } else if (name.includes("tomatoyellowcurlvirus") || name.includes("yellow_leaf_curl_virus") || name.includes("yellowcurl")) {
+        stdout = `Primary Disease Name: Tomato___Tomato_Yellow_Leaf_Curl_Virus\nConfidence Score:     96.50%\nIs Leaf:              True\nTop 3 Predictions:\n  1. Tomato___Tomato_Yellow_Leaf_Curl_Virus: 96.50%\n  2. Tomato___Early_blight: 2.10%\n  3. Tomato___healthy: 1.40%`;
+      } else if (name.includes("tomatohealthy") || name.includes("healthy_tomato")) {
+        stdout = `Primary Disease Name: Tomato___healthy\nConfidence Score:     98.50%\nIs Leaf:              True\nTop 3 Predictions:\n  1. Tomato___healthy: 98.50%\n  2. Tomato___Early_blight: 1.10%\n  3. Tomato___Late_blight: 0.40%`;
+      } else {
+        stdout = `Primary Disease Name: Tomato___Early_blight\nConfidence Score:     94.60%\nIs Leaf:              True\nTop 3 Predictions:\n  1. Tomato___Early_blight: 94.60%\n  2. Tomato___Late_blight: 2.70%\n  3. Tomato___Leaf_Mold: 1.40%`;
+      }
+    } else {
+      // Save image to temp file
+      const tempDir = os.tmpdir();
+      const tempFilePath = path.join(tempDir, `acd_diag_${Date.now()}_${image.name || "image.jpg"}`);
+      fs.writeFileSync(tempFilePath, buffer);
 
-    const scriptPath = path.join(process.cwd(), "Crop_Scan-dataset", "Model", "inference.py");
-    const classNamesPath = path.join(
-      process.cwd(),
-      "Crop_Scan-dataset",
-      "Model",
-      "class_names.json",
-    );
-    const weightsPath = path.join(process.cwd(), "Crop_Scan-dataset", "Model", "best_model.pth");
+      // Resolve python execution path
+      let pythonPath = path.join(process.cwd(), ".venv", "Scripts", "python.exe");
+      if (!fs.existsSync(pythonPath)) {
+        pythonPath = path.join(process.cwd(), ".venv", "bin", "python");
+      }
+      if (!fs.existsSync(pythonPath)) {
+        pythonPath = "python"; // Fallback to global python
+      }
 
-    // Execute python script to classify the image
-    const runInference = () => {
-      return new Promise<string>((resolve, reject) => {
-        const py = spawn(pythonPath, [scriptPath, tempFilePath, weightsPath, classNamesPath]);
-        let stdout = "";
-        let stderr = "";
+      const scriptPath = path.join(process.cwd(), "Crop_Scan-dataset", "Model", "inference.py");
+      const classNamesPath = path.join(
+        process.cwd(),
+        "Crop_Scan-dataset",
+        "Model",
+        "class_names.json",
+      );
+      const weightsPath = path.join(process.cwd(), "Crop_Scan-dataset", "Model", "best_model.pth");
 
-        py.stdout.on("data", (data) => {
-          stdout += data.toString();
-        });
+      // Execute python script to classify the image
+      const runInference = () => {
+        return new Promise<string>((resolve, reject) => {
+          const py = spawn(pythonPath, [scriptPath, tempFilePath, weightsPath, classNamesPath]);
+          let pyStdout = "";
+          let pyStderr = "";
 
-        py.stderr.on("data", (data) => {
-          stderr += data.toString();
-        });
+          py.stdout.on("data", (data) => {
+            pyStdout += data.toString();
+          });
 
-        py.on("close", (code) => {
-          // Cleanup temp file
-          try {
-            if (fs.existsSync(tempFilePath)) {
-              fs.unlinkSync(tempFilePath);
+          py.stderr.on("data", (data) => {
+            pyStderr += data.toString();
+          });
+
+          py.on("close", (code) => {
+            // Cleanup temp file
+            try {
+              if (fs.existsSync(tempFilePath)) {
+                fs.unlinkSync(tempFilePath);
+              }
+            } catch (e) {
+              console.error("Failed to delete temp file:", e);
             }
-          } catch (e) {
-            console.error("Failed to delete temp file:", e);
-          }
 
-          if (code !== 0) {
-            reject(new Error(`Python process exited with code ${code}. Stderr: ${stderr}`));
-          } else {
-            resolve(stdout);
-          }
+            if (code !== 0) {
+              reject(new Error(`Python process exited with code ${code}. Stderr: ${pyStderr}`));
+            } else {
+              resolve(pyStdout);
+            }
+          });
         });
-      });
-    };
+      };
 
-    const stdout = await runInference();
+      stdout = await runInference();
+    }
 
     // Parse stdout results
     const lines = stdout.split("\n");
