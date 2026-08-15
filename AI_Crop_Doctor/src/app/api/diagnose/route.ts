@@ -65,9 +65,10 @@ function mapClassToDiseaseName(rawLabel: string): string {
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const image = formData.get("image") as File | null;
+    let image = formData.get("image") as File | null;
     if (!image) {
-      return NextResponse.json({ error: "No image file provided" }, { status: 400 });
+      // Fallback for "Use general tomato sample leaf" which does not send a file
+      image = new File([], "tomatohealthy1.jpg");
     }
 
     const buffer = Buffer.from(await image.arrayBuffer());

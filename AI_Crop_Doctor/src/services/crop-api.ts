@@ -300,7 +300,7 @@ export function confidenceBand(confidence: number): {
 } {
   if (confidence >= 0.85) return { label: "High Confidence", tone: "success" };
   if (confidence >= 0.6) return { label: "Medium Confidence", tone: "warning" };
-  return { label: "Low Confidence", tone: "destructive" };
+  return { label: "Low confidence — model still under training", tone: "destructive" };
 }
 
 /**

@@ -327,6 +327,14 @@ export default function ResultScreen() {
             <div className="mt-4">
               <ConfidenceIndicator confidence={lastResult.confidence} />
             </div>
+            {lastResult.confidence < 0.35 && (
+              <div className="mt-4 flex gap-2.5 rounded-xl bg-destructive-soft border border-destructive/25 p-3 text-destructive animate-rise">
+                <AlertTriangle className="size-4.5 shrink-0 mt-0.5" aria-hidden />
+                <p className="text-xs font-medium leading-relaxed">
+                  <strong>Low confidence — model still under training.</strong> The predicted disease may not be accurate. Treat this diagnosis as a preliminary suggestion only.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
