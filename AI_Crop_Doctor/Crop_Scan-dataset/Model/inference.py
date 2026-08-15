@@ -2,11 +2,24 @@ import os
 import sys
 import time
 import json
-import torch
-import torch.nn as nn
-from PIL import Image
-from torchvision import transforms
-import timm
+import warnings
+
+# Suppress deprecation and user warnings (e.g., Pillow warnings)
+warnings.filterwarnings("ignore")
+
+try:
+    import torch
+    import torch.nn as nn
+    from PIL import Image
+    from torchvision import transforms
+    import timm
+except ImportError as e:
+    missing_module = e.name if hasattr(e, 'name') and e.name else str(e)
+    print(f"Error: Missing required dependency '{missing_module}'. "
+          f"Please ensure you are running this script within the project's virtual environment (.venv) "
+          f"or install the required libraries: pip install torch torchvision timm pillow", file=sys.stderr)
+    sys.exit(1)
+
 
 def load_class_names(class_names_path):
     """Loads class names from JSON file."""
@@ -21,9 +34,8 @@ def initialize_model(model_name, num_classes, weights_path, device):
     print(f"Initializing {model_name}...")
     model = timm.create_model(model_name, pretrained=False)
     
-    # Adapt head classifier
-    num_features = model.head.fc.in_features
-    model.head.fc = nn.Linear(num_features, num_classes)
+    # Adapt head classifier using timm's standard API (resolves Pylance type checking/IDE errors)
+    model.reset_classifier(num_classes)
     
     if not os.path.exists(weights_path):
         raise FileNotFoundError(f"Trained model weights not found at {weights_path}")

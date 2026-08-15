@@ -179,8 +179,7 @@ def main():
         model = timm.create_model('mobilevit_s', pretrained=False)
         
         # Adjust head
-        num_features = model.head.fc.in_features
-        model.head.fc = nn.Linear(num_features, num_classes)
+        model.reset_classifier(num_classes)
         model = model.to(device)
         print(f"Classifier head updated for {num_classes} target labels.")
         
