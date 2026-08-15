@@ -48,17 +48,23 @@ def initialize_model(model_name, num_classes, weights_path, device):
     print("Model initialized and weights loaded successfully.")
     return model
 
-def is_leaf_image(image_path, threshold=0.08):
-    """Detects if the image is a leaf based on color profile (green, yellow, brown)."""
+def is_leaf_image(image_path, threshold=0.15, center_threshold=0.20):
+    """Detects if the image is a leaf based on color profile (green, yellow, brown) and location."""
     try:
         image = Image.open(image_path).convert('RGB')
-        small_img = image.resize((50, 50))
+        # Resize to 100x100 for fast pixel coordinate processing
+        small_img = image.resize((100, 100))
         pixels = list(small_img.getdata())
         
         leaf_count = 0
+        center_leaf_count = 0
+        center_total = 0
         total = len(pixels)
         
-        for r, g, b in pixels:
+        for idx, (r, g, b) in enumerate(pixels):
+            x = idx % 100
+            y = idx // 100
+            
             # Green check: G is dominant
             is_green = (g > r) and (g > b) and (g > 35)
             
@@ -68,12 +74,26 @@ def is_leaf_image(image_path, threshold=0.08):
             # Yellow leaf check
             is_yellow = (r > 1.1 * g) and (g > 1.1 * b) and (g > 50) and (b < 120)
             
-            if is_green or is_brown or is_yellow:
+            is_leaf_pixel = is_green or is_brown or is_yellow
+            
+            if is_leaf_pixel:
                 leaf_count += 1
                 
-        ratio = leaf_count / total
-        print(f"DEBUG: Leaf color ratio: {ratio:.4f}")
-        return ratio >= threshold
+            # Check if pixel is in the center 50% region (x and y between 25 and 75)
+            if 25 <= x <= 75 and 25 <= y <= 75:
+                center_total += 1
+                if is_leaf_pixel:
+                    center_leaf_count += 1
+                    
+        overall_ratio = leaf_count / total
+        center_ratio = center_leaf_count / center_total if center_total > 0 else 0
+        
+        print(f"DEBUG: Overall leaf color ratio: {overall_ratio:.4f}")
+        print(f"DEBUG: Center leaf color ratio: {center_ratio:.4f}")
+        
+        # To be verified as a leaf, must meet both overall and center thresholds
+        is_verified = (overall_ratio >= threshold) and (center_ratio >= center_threshold)
+        return is_verified
     except Exception as e:
         print(f"DEBUG: Leaf checking failed: {e}")
         return True
