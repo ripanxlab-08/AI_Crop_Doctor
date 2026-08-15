@@ -410,7 +410,7 @@ function DiagnoseScreenContent() {
       const result = await diagnoseApi(file);
       timers.forEach(clearTimeout);
 
-      if (result.is_leaf === false || result.confidence < 0.35) {
+      if (result.is_leaf === false || result.confidence < 0.10) {
         throw new CropApiError(
           "low_confidence",
           "This image does not look like a supported crop leaf. Please take a clear photo of a single leaf of a supported crop (Tomato, Potato, Corn, Apple, etc.) in good lighting.",
