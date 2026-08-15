@@ -146,6 +146,15 @@ Make sure you have installed:
 
 ---
 
+## 📊 Dataset Information
+
+The model is trained on the **New Plant Diseases Dataset** sourced from Kaggle.
+* **Dataset Link:** [Kaggle - New Plant Diseases Dataset](https://www.kaggle.com/datasets/vipoooool/new-plant-diseases-dataset)
+* **Statistics:** Comprises approximately 87,000 RGB images of healthy and diseased crop leaves, categorized into 38 distinct classes.
+* **Phase 1 Training Focus:** Currently, the training pipeline filters this dataset to focus specifically on **Tomato** leaf classes to validate the end-to-end loop before scale-up.
+
+---
+
 ## 🧠 Model Training & Training Configuration
 
 The disease classification model utilizes **MobileViT Small** for high-efficiency classification on mobile devices.
