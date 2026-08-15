@@ -1,875 +1,616 @@
-# Field Guardian
+# 🌱 AI Crop Doctor
 
-Build a modern, clean, professional farmer-focused mobile application UI/UX for my Final Year Project.
+> **AI-powered mobile crop disease detection and farmer assistance
+> platform**
 
-PROJECT NAME:
-AI Crop Doctor
+AI Crop Doctor is a smart, farmer-focused application designed to help
+identify crop diseases from leaf images using **MobileViT-based deep
+learning**. The project combines computer vision, artificial
+intelligence, and a lightweight mobile-friendly interface to provide
+practical crop health assistance.
 
-PROJECT PURPOSE:
-The application helps farmers identify crop diseases from leaf images using a lightweight MobileViT deep-learning model and provides understandable guidance to the farmer.
+The project is being developed in phases, beginning with **Tomato
+disease detection** and later expanding to additional crops.
 
-IMPORTANT:
-This is an Application-Based academic project.
+------------------------------------------------------------------------
 
-For the first implementation, focus on TOMATO only. The architecture must be designed so that additional crops such as potato, rice, corn, etc. can be added later without redesigning the entire application.
+## 📌 Project Overview
 
-The application should feel like a real production-quality agricultural AI assistant, not a generic student dashboard.
+Crop diseases can significantly affect agricultural productivity,
+especially when identification is delayed or requires expert
+intervention.
 
-==================================================
+**AI Crop Doctor** aims to provide a simple workflow:
 
-DESIGN STYLE
-==================================================
+``` text
+Farmer
+   ↓
+Capture / Upload Leaf Image
+   ↓
+Image Validation & Preprocessing
+   ↓
+MobileViT Disease Detection Model
+   ↓
+Disease Prediction + Confidence
+   ↓
+Farmer-Friendly Recommendation
+   ↓
+History / AI Assistant / Crop Reminders
+```
 
-Create a clean, modern, premium mobile UI.
+The first implementation phase focuses specifically on **Tomato disease
+classification**. Additional crops can be integrated later without
+redesigning the complete application architecture.
 
-Use:
+------------------------------------------------------------------------
 
-Minimal interface
+## 🎯 Objectives
 
-Soft rounded cards
+-   Detect crop diseases from leaf images using deep learning.
+-   Start with a focused **Tomato disease detection** model.
+-   Use **MobileViT** for an efficient and lightweight vision model.
+-   Provide disease predictions with confidence scores.
+-   Present results through a clean and farmer-friendly mobile
+    interface.
+-   Maintain detection history for authenticated users.
+-   Provide an AI assistant for general crop-health guidance.
+-   Provide smart crop-calendar and reminder features.
+-   Design the system so additional crops can be added in future phases.
 
-Clear typography
+------------------------------------------------------------------------
 
-Large touch-friendly buttons
+## 🚀 Current Development Scope
 
-Subtle 3D depth
+### Phase 1 --- Tomato Disease Detection
 
-Soft shadows
+The initial model is trained only on classes beginning with:
 
-Modern agricultural visual language
+``` text
+Tomato___
+```
 
-Clean icons
+All other crop classes are ignored during the first training phase.
 
-Smooth animations
+This allows the project to establish and evaluate the complete pipeline
+using one crop before expanding to other crops.
 
-Professional spacing
+### Planned Expansion
 
-Accessible contrast
+Future versions can add:
 
-Farmer-friendly language
+-   Potato
+-   Apple
+-   Corn
+-   Grape
+-   Pepper
+-   Other supported crops
 
-Use a subtle 3D/modern visual style, but DO NOT make the interface visually complicated.
+The model-training pipeline will be designed so that new crop classes
+can be added systematically.
 
-The UI should remain lightweight and fast.
+------------------------------------------------------------------------
 
-Use a natural agricultural visual identity.
+## 🧠 AI / Machine Learning
 
-Avoid:
+### Model
 
-Excessive gradients
+**MobileViT Small**
 
-Excessive glassmorphism
+MobileViT is selected because the project targets a mobile-oriented
+application where model efficiency is important.
 
-Crowded dashboards
+### Training Approach
 
-Tiny text
+The project uses:
 
-Complicated charts
+-   PyTorch
+-   `timm`
+-   Transfer Learning
+-   Image Classification
+-   AdamW optimizer
+-   Cross Entropy Loss
+-   Cosine Annealing learning-rate scheduling
+-   GPU acceleration when available
 
-Too many colors
+### Initial Training Configuration
 
-Gaming-style UI
+  Parameter           Configuration
+  ------------------- ---------------------------------
+  Model               MobileViT Small
+  Framework           PyTorch
+  Model Library       timm
+  Input Size          224 × 224
+  Batch Size          32
+  Epochs              20
+  Optimizer           AdamW
+  Learning Rate       0.0001
+  Loss Function       CrossEntropyLoss
+  Scheduler           CosineAnnealingLR
+  Training Strategy   Transfer Learning + Fine-tuning
 
-The application should look suitable for a real agricultural technology product.
+### Image Augmentation
 
-Create a bottom navigation bar with:
+Training images use transformations such as:
 
-Home
+-   Random Horizontal Flip
+-   Random Rotation
+-   Color Jitter
+-   Image Normalization
+-   Resize to 224 × 224
 
-Diagnose
+------------------------------------------------------------------------
 
-Calendar
+## 📊 Model Evaluation
 
-Assistant
+The training pipeline is intended to evaluate the model using:
 
-Profile
+-   Training Loss
+-   Validation Loss
+-   Training Accuracy
+-   Validation Accuracy
+-   Precision
+-   Recall
+-   F1 Score
+-   Confusion Matrix
+-   Classification Report
 
-Use clean modern icons.
+Training visualizations include:
 
-Create a premium splash screen.
+``` text
+Accuracy Plot
+Loss Plot
+Confusion Matrix
+```
 
-Show:
+The best-performing model is saved separately from the latest training
+checkpoint.
 
-Application logo
+------------------------------------------------------------------------
 
-Leaf/crop-inspired AI icon
+## 📁 Dataset Structure
 
-Application name
+The dataset follows an `ImageFolder`-compatible structure:
 
-Short tagline
+``` text
+Dataset/
+│
+├── train/
+│   ├── Tomato___Class_1/
+│   ├── Tomato___Class_2/
+│   ├── Tomato___Class_3/
+│   └── ...
+│
+└── valid/
+    ├── Tomato___Class_1/
+    ├── Tomato___Class_2/
+    ├── Tomato___Class_3/
+    └── ...
+```
+
+During the first phase, only directories beginning with:
+
+``` text
+Tomato___
+```
+
+are selected.
+
+------------------------------------------------------------------------
+
+## 🏗️ System Architecture
+
+``` text
+                    ┌─────────────────────┐
+                    │      Farmer         │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Mobile Interface  │
+                    │   Image Capture      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Image Validation &  │
+                    │   Preprocessing      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │     MobileViT       │
+                    │ Disease Classifier  │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Prediction Result   │
+                    │ Disease + Confidence│
+                    └──────────┬──────────┘
+                               │
+                 ┌─────────────┼─────────────┐
+                 ▼             ▼             ▼
+          ┌────────────┐ ┌───────────┐ ┌─────────────┐
+          │ Detection  │ │ AI        │ │ Crop        │
+          │ History    │ │ Assistant │ │ Reminders   │
+          └────────────┘ └───────────┘ └─────────────┘
+```
+
+------------------------------------------------------------------------
+
+## 💻 Application Technology Stack
+
+### Frontend
+
+-   **Next.js**
+-   **TypeScript**
+-   Responsive mobile-first UI
+-   Modern component-based architecture
+
+### Backend / Cloud
+
+-   **Supabase**
+-   Supabase Authentication
+-   PostgreSQL database
+-   Row Level Security (RLS)
+-   Storage where required
+
+### AI / ML
+
+-   Python
+-   PyTorch
+-   timm
+-   MobileViT
+-   Google Colab for initial model training
+
+### Development
+
+-   Git
+-   GitHub
+-   VS Code
+-   Google Colab
+
+------------------------------------------------------------------------
+
+## 🔐 Authentication
+
+Supabase Authentication is used for application authentication.
+
+Planned authentication flow:
+
+``` text
+Signup
+  ↓
+Supabase Authentication
+  ↓
+Login
+  ↓
+Authenticated Dashboard
+  ↓
+Crop Disease Detection
+```
+
+Supported account operations include:
+
+-   Sign Up
+-   Email/Password Login
+-   Logout
+-   Session Management
+
+User-specific application data can be associated with the authenticated
+Supabase user ID.
+
+> **Security:** Supabase secret keys and private credentials must never
+> be committed to GitHub.
+
+------------------------------------------------------------------------
+
+## 🤖 AI Assistant
+
+The application is planned to include an **AI Crop Assistant** that acts
+as a farmer-friendly assistant.
+
+Potential capabilities include:
+
+-   Explain detected diseases in simple language.
+-   Provide general crop-care guidance.
+-   Answer crop-related questions.
+-   Explain prevention practices.
+-   Help farmers understand detection results.
+-   Provide guidance based on crop growth stages.
+
+The assistant is intended to complement the disease-classification model
+rather than replace professional agricultural advice.
+
+------------------------------------------------------------------------
+
+## 📅 Smart Crop Calendar & Reminders
+
+A planned feature of AI Crop Doctor is a crop calendar designed around
+farming activities.
+
+The calendar can help organize information such as:
+
+-   Crop growing period
+-   Expected harvest period
+-   Suitable growing months
+-   Crop-care reminders
+-   Important farming activities
+-   Disease-monitoring reminders
 
 Example:
 
-"Smart Crop Care with AI"
-
-Animation:
-
-Subtle leaf movement
-
-Soft AI scanning effect
-
-Smooth transition to onboarding
-
-Create 3 onboarding screens.
-
-Screen 1:
-
-"Detect Crop Diseases"
-
-Explain that the farmer can capture or upload a crop leaf image and receive an AI-based disease prediction.
-
-Screen 2:
-
-"Get Smart Crop Guidance"
-
-Explain that the application provides disease information, prevention and treatment guidance.
-
-Screen 3:
-
-"Never Miss Important Crop Activities"
-
-Explain the crop calendar, sowing period, growth timeline and harvest reminders.
-
-Include:
-
-Skip
-
-Next
-
-Get Started
-
-The home screen should be the main farmer dashboard.
-
-Top:
-
-"Good Morning, Farmer"
-
-Below:
-
-"How can I help your crop today?"
-
-Create a large primary card:
-
-"AI Crop Diagnosis"
-
-Buttons:
-
-"Capture Leaf"
-
-"Upload Image"
-
-Use a subtle 3D leaf illustration.
-
-Below this show:
-
-"Your Crops"
-
-For the current prototype show:
-
-Tomato
-
-Status:
-
-"Growing"
-
-Show a compact crop-progress indicator.
-
-Example:
-
-Sowing → Growth → Flowering → Fruiting → Harvest
-
-Highlight the current stage.
-
-Below:
-
-"Upcoming"
-
-Show upcoming crop-related reminders.
-
-Example:
-
-"Tomato harvest expected in 18 days"
-
-"Watering reminder tomorrow"
-
-"Favorable planting period for another crop starts next month"
-
-Below:
-
-"AI Assistant"
-
-Small assistant card:
-
-"Ask me anything about your crops"
-
-Button:
-
-"Talk to AI Assistant"
-
-This is the MOST IMPORTANT screen.
-
-Create a beautiful image-capture interface.
-
-Title:
-
-"Diagnose Your Crop"
-
-Instruction:
-
-"Capture a clear photo of the leaf"
-
-Provide:
-
-Camera
-
-Gallery
-
-Upload Image
-
-After selecting the image show a preview.
-
-Include a clean scanning animation:
-
-"Analyzing leaf..."
-
-Use a subtle AI scanning line around the leaf.
-
-Before sending the image to MobileViT, show an image-quality verification stage.
-
-This is part of my project.
-
-Display:
-
-"Checking image quality..."
-
-Check:
-
-Leaf visibility
-
-Image sharpness
-
-Brightness
-
-Image quality
-
-Suitable crop image
-
-If valid:
-
-"Image looks good"
-
-Continue to AI diagnosis.
-
-If invalid:
-
-"Please capture another image"
-
-Give understandable reason:
-
-"Image is too blurry"
-
-or
-
-"Leaf is too dark"
-
-or
-
-"Please move closer to the leaf"
-
-The UI must make this simple for farmers.
-
-After analysis show:
-
-"Diagnosis Result"
-
-Display:
-
-Leaf image
-
-Crop:
-
-Tomato
-
+``` text
+                 CROP CALENDAR
+
+January     → Suitable crop / preparation
+February    → Planting period
+March       → Growth monitoring
+April       → Disease monitoring
+May         → Harvest period
+```
+
+The exact recommendations will depend on crop and location data added to
+the system.
+
+------------------------------------------------------------------------
+
+## 🔬 Disease Detection Workflow
+
+``` text
+1. User captures/uploads leaf image
+             ↓
+2. Validate image
+             ↓
+3. Resize to 224 × 224
+             ↓
+4. Apply preprocessing
+             ↓
+5. Pass image to MobileViT
+             ↓
+6. Generate class probabilities
+             ↓
+7. Select highest-probability disease
+             ↓
+8. Display disease + confidence
+             ↓
+9. Store detection history
+```
+
+The prediction interface is planned to display:
+
+``` text
+Disease Name
+Confidence Score
+Top 3 Predictions
+```
+
+------------------------------------------------------------------------
+
+## 🧪 Model Outputs
+
+The training pipeline is intended to produce:
+
+``` text
+best_model.pth
+last_model.pth
+class_names.json
+```
+
+These files can be used by the prediction/inference component.
+
+Example prediction:
+
+``` text
 Disease:
-
-Tomato Early Blight
+Tomato___Early_blight
 
 Confidence:
+94.32%
 
-94.6%
+Top 3 Predictions:
+1. Tomato___Early_blight     94.32%
+2. Tomato___Late_blight       3.91%
+3. Tomato___Healthy           1.77%
+```
 
-Use a clear confidence visualization.
+*The values above are an example format, not actual model results.*
+
+------------------------------------------------------------------------
+
+## 📂 Suggested Repository Structure
+
+``` text
+AI_Crop_Doctor/
+│
+├── app/                         # Next.js application
+│   ├── page.tsx
+│   ├── login/
+│   ├── signup/
+│   ├── dashboard/
+│   └── ...
+│
+├── components/                 # Reusable UI components
+│
+├── lib/
+│   └── supabase/               # Supabase client/configuration
+│
+├── ml/                         # Machine learning components
+│   ├── training/
+│   ├── inference/
+│   ├── models/
+│   └── evaluation/
+│
+├── public/                     # Static assets
+│
+├── notebooks/                  # Google Colab/Jupyter notebooks
+│
+├── .env.local                  # Local environment variables
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+------------------------------------------------------------------------
+
+## ⚙️ Local Development
+
+### 1. Clone the repository
+
+``` bash
+git clone https://github.com/Roni23bhai/AI_Crop_Doctor.git
+cd AI_Crop_Doctor
+```
+
+### 2. Install dependencies
+
+``` bash
+npm install
+```
+
+### 3. Configure environment variables
+
+Create:
+
+``` text
+.env.local
+```
 
 Example:
 
-94.6%
-High Confidence
+``` env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+```
 
-Also show:
+Do not commit `.env.local`.
 
-"Top Predictions"
+### 4. Start the development server
 
-Early Blight — 94.6%
-
-Late Blight — 2.7%
-
-Leaf Mold — 1.4%
-
-Do not overload the screen.
-
-Create a detailed but easy-to-understand result page.
-
-Sections:
-
-Disease Name
-
-What is it?
-
-Symptoms
-
-Possible Cause
-
-What to do now
-
-Prevention
-
-Treatment Guidance
-
-Use simple language suitable for farmers.
-
-Include:
-
-"Listen to this"
-
-button.
-
-The application should be designed so the information can later be converted to speech.
-
-Create a section for:
-
-"Estimated Disease Severity"
-
-For the current prototype, keep this module prepared but clearly mark it as:
-
-"Coming in the next model update"
-
-Possible future states:
-
-Mild
-
-Moderate
-
-Severe
-
-Do not pretend that severity is available if the backend does not provide it.
-
-The UI should already be designed so the module can be connected later.
-
-Create a dedicated AI chatbot called:
-
-"AgriCoach"
-
-or
-
-"Crop Coach"
-
-The assistant should feel like a friendly agricultural AI coach.
-
-UI:
-
-AI avatar using a simple 3D leaf/robot character.
-
-Welcome message:
-
-"Hi! I'm your Crop Coach. Ask me about your crop, disease, watering, planting or harvesting."
-
-Provide suggested questions:
-
-"Is my tomato leaf healthy?"
-
-"When should I harvest?"
-
-"What should I do for Early Blight?"
-
-"Which crop is suitable this month?"
-
-"How long does tomato take to grow?"
-
-"What should I do after disease detection?"
-
-The chatbot should support:
-
-Text input
-
-Microphone button
-
-Voice response
-
-Suggested questions
-
-Chat history
-
-The assistant should use the application's crop/disease knowledge database when answering agricultural questions.
-
-IMPORTANT:
-Do not make the assistant hallucinate agricultural recommendations.
-
-Use structured crop information from the application's database whenever possible.
-
-Create a dedicated "Crop Calendar" screen.
-
-This is an important feature of my project.
-
-The calendar should help farmers understand:
-
-Suitable sowing periods
-
-Crop growth duration
-
-Expected harvesting period
-
-Current crop stage
-
-Upcoming crop activities
-
-Important reminders
-
-Favorable months for different crops
-
-Create a beautiful monthly calendar.
-
-Example:
-
-AUGUST 2026
-
-Show crop-related events.
-
-Example:
-
-Tomato
-
-Sowing:
-August 5
-
-Vegetative Growth:
-August 6 – August 25
-
-Flowering:
-August 26 – September 10
-
-Fruiting:
-September 11 – September 30
-
-Expected Harvest:
-October 1 – October 15
-
-Use color-coded timeline indicators but keep the colors accessible and not excessive.
-
-Create reminder cards connected to the crop calendar.
-
-Examples:
-
-"Tomato harvest window begins in 7 days"
-
-"Tomato is currently in the flowering stage"
-
-"Recommended time to monitor for disease"
-
-"Planting period for [crop] begins this month"
-
-"Expected harvest period is approaching"
-
-Allow:
-
-Add Reminder
-
-Edit Reminder
-
-Delete Reminder
-
-Enable/disable notifications
-
-The system should calculate reminders based on:
-
-Sowing date
-
-Crop type
-
-Expected growth duration
-
-Growth stage
-
-Expected harvest period
-
-Do NOT randomly generate agricultural dates.
-
-Use crop-specific data stored in the application database.
-
-Create a future-ready crop database screen.
-
-Initially show:
-
-Tomato
-
-Later allow:
-
-Potato
-
-Rice
-
-Corn
-
-Chilli
-
-Cotton
-
-etc.
-
-For each crop display:
-
-Crop name
-
-Growing duration
-
-Suitable planting months
-
-Growth stages
-
-Expected harvest period
-
-Common diseases
-
-Basic care information
-
-The architecture must allow new crops to be added through data/database changes rather than redesigning the UI.
-
-Create a diagnosis history section.
-
-Show:
-
-Date
-
-Crop
-
-Disease
-
-Confidence
-
-Image thumbnail
-
-Severity if available
-
-Example:
-
-August 13
-
-Tomato
-
-Early Blight
-
-94.6%
-
-Allow the farmer to open previous diagnosis details.
-
-Create a simple farmer profile.
-
-Fields:
-
-Name
-
-Location/Region
-
-Preferred Language
-
-Crops
-
-Notification preferences
-
-Voice settings
-
-Units/preferences
-
-Keep the profile simple.
-
-The UI should be designed for future multilingual support.
-
-Initially use English.
-
-Prepare the architecture for languages such as:
-
-English
-
-Hindi
-
-Tamil
-
-Telugu
-
-Malayalam
-
-Kannada
-
-Do not hardcode UI text in a way that makes future translation difficult.
-
-Add microphone and speaker icons throughout relevant screens.
-
-The future system should support:
-
-Speech-to-text for asking AgriCoach questions.
-
-Text-to-speech for:
-
-Disease result
-
-Treatment guidance
-
-Crop reminders
-
-Calendar information
-
-Important warnings
-
-The UI should be prepared for this functionality.
-
-Create notification cards for:
-
-Crop reminders
-
-Harvest reminders
-
-Disease follow-up
-
-Calendar events
-
-AI recommendations
-
-Example:
-
-"Your tomato crop is approaching its expected harvest window."
-
-"Check your tomato leaves for disease symptoms."
-
-The frontend should be designed to communicate with a REST API.
-
-Planned architecture:
-
-Flutter Application
-↓
-REST API
-↓
-FastAPI Backend
-↓
-Image Verification
-↓
-MobileViT Model
-↓
-Prediction
-↓
-FastAPI
-↓
-Flutter Application
-
-The UI must therefore use clean service/API abstraction instead of hardcoding prediction results into components.
-
-The current AI model is:
-
-MobileViT Small
-
-Framework:
-
-PyTorch
-
-Current model:
-
-Tomato disease classification
-
-The frontend should be prepared to receive API response such as:
-
-{
-"crop": "Tomato",
-"disease": "Early Blight",
-"confidence": 0.946,
-"top_predictions": [],
-"severity": null
-}
-
-If severity is null, display:
-
-"Severity estimation will be available in a future update."
-
-Do not fabricate results.
-
-Design professional error states for:
-
-No internet
-
-Camera permission denied
-
-Invalid image
-
-Blurry image
-
-Low brightness
-
-No leaf detected
-
-Model unavailable
-
-Server unavailable
-
-Low-confidence prediction
-
-Unknown crop
-
-Upload failure
-
-Create beautiful but lightweight loading animations.
-
-For AI diagnosis:
-
-"Scanning leaf..."
-
-"Checking image quality..."
-
-"Running AI diagnosis..."
-
-"Preparing your crop guidance..."
-
-Use a subtle agricultural AI animation.
-
-The primary target is mobile.
-
-Design for:
-
-Android phones
-
-Small screens
-
-Medium screens
-
-Large screens
-
-Use responsive layouts.
-
-All important controls should be easy to tap.
-
-Avoid tiny text.
-
-Create reusable components.
-
-Suggested components:
-
-AppHeader
-
-BottomNavigation
-
-CropCard
-
-DiagnosisCard
-
-DiseaseResultCard
-
-ConfidenceIndicator
-
-CropTimeline
-
-CropCalendar
-
-ReminderCard
-
-AIChatBubble
-
-AssistantInput
-
-VoiceButton
-
-ImageCaptureCard
-
-LoadingScanner
-
-NotificationCard
-
-The final application should communicate:
-
-"Simple enough for a farmer, intelligent enough to feel like an AI crop expert."
-
-It should NOT look like:
-
-A generic hospital app
-
-A generic chatbot
-
-A generic admin dashboard
-
-A generic AI template
-
-It should clearly feel like an agricultural AI product.
-
-For the prototype, prioritize:
-
-Home
-
-Camera/Upload
-
-Image Verification UI
-
-Tomato Disease Diagnosis
-
-Disease Result
-
-AgriCoach
-
-Crop Calendar
-
-Reminders
-
-History
-
-Profile
-
-Advanced modules such as:
-
-Severity estimation
-
-Multiple crops
-
-Advanced recommendations
-
-Full voice assistant
-
-On-device MobileViT inference
-
-should be designed for future integration and should not be falsely represented as completed functionality.
-
-Create the complete mobile-first UI/UX prototype with realistic navigation and realistic sample Tomato data.
-
-Make every screen visually connected and consistent.
-
-Use realistic farmer-oriented content.
-
-Do not create a generic dashboard.
-
-The final prototype should be suitable for demonstrating my Application-Based Final Year Project to my project guide.
-
-The architecture must be scalable so that the current Tomato disease detection module can later be expanded to additional crops and additional AI modules without redesigning the application.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/fe869b1d-7157-4a6a-95ac-f8347c8894f7).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+``` bash
 npm run dev
 ```
+
+Then open:
+
+``` text
+http://localhost:3000
+```
+
+------------------------------------------------------------------------
+
+## 🧠 Model Training
+
+The initial MobileViT training can be performed in Google Colab using a
+GPU.
+
+Dataset preparation:
+
+``` text
+Google Drive
+      ↓
+Dataset ZIP / Dataset Folder
+      ↓
+Google Colab
+      ↓
+Extract Dataset
+      ↓
+Select Tomato___ Classes
+      ↓
+Train MobileViT
+      ↓
+Evaluate
+      ↓
+Save Best Model
+```
+
+The training pipeline is intentionally separated from the application so
+that model development can be performed independently.
+
+------------------------------------------------------------------------
+
+## 📈 Evaluation Strategy
+
+The model will be evaluated using both quantitative and visual metrics.
+
+### Classification Metrics
+
+-   Accuracy
+-   Precision
+-   Recall
+-   F1 Score
+
+### Diagnostic Visualization
+
+-   Confusion Matrix
+-   Training vs Validation Accuracy
+-   Training vs Validation Loss
+-   Classification Report
+
+These results will help determine whether the model generalizes
+effectively to validation images.
+
+------------------------------------------------------------------------
+
+## 🔮 Future Scope
+
+The project can be extended with:
+
+-   Multi-crop disease detection
+-   More crop datasets
+-   Improved image validation
+-   Multilingual farmer interface
+-   Voice-based assistance
+-   Location-aware crop recommendations
+-   Advanced crop calendars
+-   Personalized reminders
+-   Disease history analytics
+-   Cloud model inference
+-   Model optimization for mobile/edge deployment
+
+------------------------------------------------------------------------
+
+## ⚠️ Important Disclaimer
+
+AI Crop Doctor is an academic/project prototype intended to assist with
+preliminary crop disease identification.
+
+Predictions should not be treated as a definitive agricultural
+diagnosis. Farmers should consult qualified agricultural experts when
+significant crop damage or uncertainty is involved.
+
+------------------------------------------------------------------------
+
+## 👨‍💻 Project
+
+**Project Name:** AI Crop Doctor
+
+**Core ML Project:** Mobile-Based Crop Disease Detection Using MobileViT
+
+**Initial Crop:** Tomato
+
+**Primary AI Model:** MobileViT Small
+
+**Repository:** `Roni23bhai/AI_Crop_Doctor`
+
+------------------------------------------------------------------------
+
+## 📜 License
+
+This project is currently intended for academic and educational
+purposes.
+
+A formal open-source license can be added when the project is ready for
+public distribution.
+
+------------------------------------------------------------------------
+
+## ⭐ Project Vision
+
+> **"Making AI-powered crop health assistance simple, accessible, and
+> farmer-friendly."**
+
+AI Crop Doctor aims to bridge the gap between modern computer vision
+technology and practical agricultural assistance through a lightweight,
+scalable, and easy-to-use application.
