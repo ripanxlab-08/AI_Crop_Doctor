@@ -1,4 +1,7 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Bell, CalendarDays, Home, ScanLine, Sprout, User, ChevronLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -12,7 +15,7 @@ const NAV = [
 ] as const;
 
 export function BottomNavigation() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname() || "/home";
 
   return (
     <nav
@@ -25,7 +28,7 @@ export function BottomNavigation() {
           return (
             <li key={to}>
               <Link
-                to={to}
+                href={to}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors",
@@ -65,7 +68,7 @@ export function AppHeader({
     <header className="sticky top-0 z-30 flex items-start gap-3 border-b border-border/70 bg-background/90 px-5 py-4 backdrop-blur">
       {backTo ? (
         <Link
-          to={backTo}
+          href={backTo}
           aria-label="Go back"
           className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground"
         >
@@ -84,7 +87,7 @@ export function AppHeader({
 export function NotificationBell({ count }: { count: number }) {
   return (
     <Link
-      to="/calendar"
+      href="/calendar"
       aria-label={`${count} notifications`}
       className="relative flex size-11 items-center justify-center rounded-xl bg-card shadow-soft"
     >

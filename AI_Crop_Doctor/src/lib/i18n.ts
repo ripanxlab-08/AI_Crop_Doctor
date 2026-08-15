@@ -53,6 +53,7 @@ const en = {
   "diagnose.checkingQuality": "Checking image quality...",
   "diagnose.scanning": "Scanning leaf...",
   "diagnose.running": "Running AI diagnosis...",
+  "diagnose.stageAnalysis": "Analysing disease severity stage...",
   "diagnose.preparing": "Preparing your crop guidance...",
   "diagnose.imageGood": "Image looks good",
   "diagnose.imageBad": "Please capture another image",

@@ -52,7 +52,11 @@ export function formatRange(start: Date, end: Date): string {
   return `${formatDate(start)} – ${formatDate(end)}`;
 }
 
-export function buildCropPlan(cropId: string, sowingISO: string, today = new Date()): CropPlan | null {
+export function buildCropPlan(
+  cropId: string,
+  sowingISO: string,
+  today = new Date(),
+): CropPlan | null {
   const crop = getCrop(cropId);
   if (!crop || crop.stages.length === 0) return null;
 

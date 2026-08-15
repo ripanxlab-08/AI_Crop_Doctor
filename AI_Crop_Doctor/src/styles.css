@@ -59,7 +59,8 @@
   --color-stage-4: var(--stage-4);
   --color-stage-5: var(--stage-5);
 
-  --shadow-soft: 0 1px 2px oklch(0.35 0.05 150 / 0.05), 0 8px 24px -12px oklch(0.35 0.05 150 / 0.16);
+  --shadow-soft:
+    0 1px 2px oklch(0.35 0.05 150 / 0.05), 0 8px 24px -12px oklch(0.35 0.05 150 / 0.16);
   --shadow-lift:
     0 2px 4px oklch(0.35 0.05 150 / 0.06), 0 18px 40px -18px oklch(0.35 0.05 150 / 0.28);
   --shadow-press: inset 0 -2px 0 oklch(0.3 0.06 150 / 0.18);
@@ -258,9 +259,18 @@
 }
 
 @keyframes shake-anim {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-6px); }
-  40%, 80% { transform: translateX(6px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
 }
 
 @utility animate-shake {

@@ -16,7 +16,10 @@ export interface HistoryEntry {
   crop: string;
   disease: string;
   confidence: number;
-  severity: string | null;
+  /** G0–G3 disease stage. null for healthy results. */
+  stage: "G0" | "G1" | "G2" | "G3" | null;
+  /** Estimated lesion percentage. */
+  lesionPct: number | null;
   image: string;
 }
 
@@ -66,7 +69,8 @@ function seedState(): AppState {
         crop: "Tomato",
         disease: "Early Blight",
         confidence: 0.946,
-        severity: null,
+        stage: "G2",
+        lesionPct: 22,
         image: "",
       },
       {
@@ -75,7 +79,8 @@ function seedState(): AppState {
         crop: "Tomato",
         disease: "Healthy Tomato Leaf",
         confidence: 0.912,
-        severity: null,
+        stage: "G0",
+        lesionPct: 0,
         image: "",
       },
       {
@@ -84,7 +89,8 @@ function seedState(): AppState {
         crop: "Tomato",
         disease: "Leaf Mold",
         confidence: 0.784,
-        severity: null,
+        stage: "G1",
+        lesionPct: 8,
         image: "",
       },
     ],
@@ -104,7 +110,10 @@ if (typeof window !== "undefined") {
     hydrate(); // Ensure state is loaded from localStorage first
     if (session?.user) {
       const email = session.user.email || "";
-      const name = (session.user.user_metadata?.["name"] as string | undefined) || (email.split("@")[0] as string) || "Farmer";
+      const name =
+        (session.user.user_metadata?.["name"] as string | undefined) ||
+        (email.split("@")[0] as string) ||
+        "Farmer";
       const token = session.access_token;
       setState((s) => ({
         user: { email, name, token },

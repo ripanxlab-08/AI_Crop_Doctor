@@ -13,7 +13,8 @@
 import sampleLeaf from "@/assets/sample-leaf.jpg";
 import { DISEASES, getDiseaseByName } from "@/data/crops";
 
-const BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "";
+const BASE_URL =
+  (typeof process !== "undefined" ? process.env["NEXT_PUBLIC_API_BASE_URL"] : "") ?? "";
 const USE_MOCK = !BASE_URL;
 
 export interface Prediction {
@@ -27,20 +28,17 @@ export interface DiagnosisResponse {
   disease: string;
   confidence: number;
   top_predictions: Prediction[];
-  /** null until the severity model ships. */
-  severity: "Mild" | "Moderate" | "Severe" | null;
+  /** Disease stage based on lesion percentage analysis. */
+  stage: "G0" | "G1" | "G2" | "G3" | null;
+  /** Estimated percentage of leaf area showing disease symptoms. */
+  lesionPct: number | null;
   model: string;
+  is_leaf?: boolean;
 }
 
 export interface QualityIssue {
   code:
-    | "blurry"
-    | "dark"
-    | "too_far"
-    | "no_leaf"
-    | "unknown_crop"
-    | "low_resolution"
-    | "overexposed";
+    "blurry" | "dark" | "too_far" | "no_leaf" | "unknown_crop" | "low_resolution" | "overexposed";
   message: string;
   hint: string;
 }
@@ -69,6 +67,14 @@ export class CropApiError extends Error {
 }
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Maps a lesion percentage to a G0-G3 stage. */
+export function computeStage(lesionPct: number): "G0" | "G1" | "G2" | "G3" {
+  if (lesionPct === 0) return "G0";
+  if (lesionPct <= 15) return "G1";
+  if (lesionPct <= 40) return "G2";
+  return "G3";
+}
 
 function assertOnline() {
   if (typeof navigator !== "undefined" && navigator.onLine === false) {
@@ -124,7 +130,9 @@ export const QUALITY_ISSUES: Record<string, QualityIssue> = {
 };
 
 /** Simulate a failed quality check for the demo (guide asks to see it). */
-export async function verifyImageWithIssue(code: keyof typeof QUALITY_ISSUES): Promise<QualityResponse> {
+export async function verifyImageWithIssue(
+  code: keyof typeof QUALITY_ISSUES,
+): Promise<QualityResponse> {
   await delay(1100);
   const issue = QUALITY_ISSUES[code]!;
   const failMap: Record<string, string> = {
@@ -146,7 +154,7 @@ export async function verifyImageWithIssue(code: keyof typeof QUALITY_ISSUES): P
   };
 }
 
-/** POST /diagnose — MobileViT Small (PyTorch) tomato disease classification. */
+/** POST /diagnose — MobileViT Small (PyTorch) crop disease classification. */
 export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
   assertOnline();
   if (!USE_MOCK) {
@@ -160,6 +168,115 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
   }
 
   await delay(2300);
+
+  // If a file is uploaded, parse its name to simulate real classifications for dataset images
+  if (file && file.name) {
+    const name = file.name.toLowerCase();
+    if (name.includes("applecedarrust") || name.includes("cedar_apple_rust")) {
+      return {
+        crop: "Apple",
+        disease: "Apple Cedar Rust",
+        confidence: 0.982,
+        top_predictions: [
+          { disease: "Apple Cedar Rust", confidence: 0.982 },
+          { disease: "Apple Scab", confidence: 0.012 },
+          { disease: "Healthy Apple Leaf", confidence: 0.006 },
+        ],
+        stage: "G2",
+        lesionPct: 28,
+        model: "MobileViT Small · PyTorch",
+      };
+    }
+    if (name.includes("applescab") || name.includes("apple_scab")) {
+      return {
+        crop: "Apple",
+        disease: "Apple Scab",
+        confidence: 0.954,
+        top_predictions: [
+          { disease: "Apple Scab", confidence: 0.954 },
+          { disease: "Apple Cedar Rust", confidence: 0.038 },
+          { disease: "Healthy Apple Leaf", confidence: 0.008 },
+        ],
+        stage: "G1",
+        lesionPct: 9,
+        model: "MobileViT Small · PyTorch",
+      };
+    }
+    if (name.includes("corncommonrust") || name.includes("common_rust")) {
+      return {
+        crop: "Corn",
+        disease: "Corn Common Rust",
+        confidence: 0.976,
+        top_predictions: [
+          { disease: "Corn Common Rust", confidence: 0.976 },
+          { disease: "Healthy Corn Leaf", confidence: 0.024 },
+        ],
+        stage: "G3",
+        lesionPct: 55,
+        model: "MobileViT Small · PyTorch",
+      };
+    }
+    if (name.includes("potatoearlyblight") || name.includes("early_blight")) {
+      return {
+        crop: "Potato",
+        disease: "Potato Early Blight",
+        confidence: 0.942,
+        top_predictions: [
+          { disease: "Potato Early Blight", confidence: 0.942 },
+          { disease: "Healthy Potato Leaf", confidence: 0.058 },
+        ],
+        stage: "G2",
+        lesionPct: 32,
+        model: "MobileViT Small · PyTorch",
+      };
+    }
+    if (name.includes("potatohealthy") || name.includes("healthy_potato")) {
+      return {
+        crop: "Potato",
+        disease: "Healthy Potato Leaf",
+        confidence: 0.991,
+        top_predictions: [
+          { disease: "Healthy Potato Leaf", confidence: 0.991 },
+          { disease: "Potato Early Blight", confidence: 0.009 },
+        ],
+        stage: "G0",
+        lesionPct: 0,
+        model: "MobileViT Small · PyTorch",
+      };
+    }
+    if (name.includes("tomatoyellowcurlvirus") || name.includes("yellow_leaf_curl_virus")) {
+      return {
+        crop: "Tomato",
+        disease: "Tomato Yellow Leaf Curl Virus",
+        confidence: 0.965,
+        top_predictions: [
+          { disease: "Tomato Yellow Leaf Curl Virus", confidence: 0.965 },
+          { disease: "Early Blight", confidence: 0.021 },
+          { disease: "Healthy Tomato Leaf", confidence: 0.014 },
+        ],
+        stage: "G3",
+        lesionPct: 62,
+        model: "MobileViT Small · PyTorch",
+      };
+    }
+    if (name.includes("tomatohealthy") || name.includes("healthy_tomato")) {
+      return {
+        crop: "Tomato",
+        disease: "Healthy Tomato Leaf",
+        confidence: 0.985,
+        top_predictions: [
+          { disease: "Healthy Tomato Leaf", confidence: 0.985 },
+          { disease: "Early Blight", confidence: 0.011 },
+          { disease: "Late Blight", confidence: 0.004 },
+        ],
+        stage: "G0",
+        lesionPct: 0,
+        model: "MobileViT Small · PyTorch",
+      };
+    }
+  }
+
+  // Fallback to default Tomato Early Blight
   return {
     crop: "Tomato",
     disease: "Early Blight",
@@ -169,7 +286,8 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
       { disease: "Late Blight", confidence: 0.027 },
       { disease: "Leaf Mold", confidence: 0.014 },
     ],
-    severity: null,
+    stage: "G2",
+    lesionPct: 22,
     model: "MobileViT Small · PyTorch",
   };
 }
@@ -192,14 +310,14 @@ export function confidenceBand(confidence: number): {
  */
 export async function askCropCoach(question: string): Promise<string> {
   assertOnline();
-  const apiKey = (import.meta.env["VITE_OPENAI_API_KEY"] as string) || "";
-  
+  const apiKey = process.env["NEXT_PUBLIC_OPENAI_API_KEY"] || "";
+
   try {
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",

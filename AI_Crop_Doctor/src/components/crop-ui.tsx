@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import {
   AlertTriangle,
   CalendarClock,
@@ -65,7 +65,7 @@ export function CropTimeline({ plan, compact = false }: { plan: CropPlan; compac
 
 export function CropCard({ plan }: { plan: CropPlan }) {
   return (
-    <Link to="/crops" className="block surface-lift animate-rise p-4">
+    <Link href="/crops" className="block surface-lift animate-rise p-4">
       <div className="flex items-center gap-3">
         <span className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-2xl">
           {plan.crop.emoji}
@@ -173,7 +173,11 @@ export function ConfidenceIndicator({ confidence }: { confidence: number }) {
   const band = confidenceBand(confidence);
   const pct = (confidence * 100).toFixed(1);
   const barTone =
-    band.tone === "success" ? "bg-success" : band.tone === "warning" ? "bg-warning" : "bg-destructive";
+    band.tone === "success"
+      ? "bg-success"
+      : band.tone === "warning"
+        ? "bg-warning"
+        : "bg-destructive";
   const textTone =
     band.tone === "success"
       ? "text-success"
@@ -264,7 +268,10 @@ export function LoadingScanner({ label, image }: { label: string; image?: string
           className="pointer-events-none absolute inset-x-0 h-0.5 animate-scan bg-primary shadow-[0_0_18px_2px_var(--color-primary)]"
           aria-hidden
         />
-        <span className="pointer-events-none absolute inset-3 rounded-2xl border-2 border-primary/50" aria-hidden />
+        <span
+          className="pointer-events-none absolute inset-3 rounded-2xl border-2 border-primary/50"
+          aria-hidden
+        />
       </div>
       <p aria-live="polite" className="mt-5 text-sm font-semibold">
         {label}
@@ -290,7 +297,9 @@ export function ErrorState({
 }) {
   const Icon = kind === "offline" ? WifiOff : AlertTriangle;
   const wrap =
-    kind === "danger" ? "bg-destructive-soft text-destructive" : "bg-warning-soft text-warning-foreground";
+    kind === "danger"
+      ? "bg-destructive-soft text-destructive"
+      : "bg-warning-soft text-warning-foreground";
   return (
     <div className="surface p-5 text-center">
       <span className={cn("mx-auto flex size-14 items-center justify-center rounded-2xl", wrap)}>
@@ -323,7 +332,10 @@ export function StageRangeList({ plan }: { plan: CropPlan }) {
             w.status === "current" ? "bg-primary-soft" : "bg-secondary/60",
           )}
         >
-          <span className={cn("size-3 shrink-0 rounded-full", STAGE_BG[w.stage.tone])} aria-hidden />
+          <span
+            className={cn("size-3 shrink-0 rounded-full", STAGE_BG[w.stage.tone])}
+            aria-hidden
+          />
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold">
               {w.stage.label}

@@ -36,3 +36,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Next.js build artifacts
+.next/
+
+# Python virtual environment
+.venv/
+
+# Large datasets and compressed files
+Crop_Scan-dataset/dataset.7z
+Crop_Scan-dataset/**/*.zip
+Crop_Scan-dataset/**/*.7z
+Crop_Scan-dataset/dataset/New Plant Diseases Dataset(Augmented)/
+Crop_Scan-dataset/dataset/test/
+Crop_Scan-dataset/Model/dataset/
+

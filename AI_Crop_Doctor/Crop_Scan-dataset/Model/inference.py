@@ -1,0 +1,158 @@
+import os
+import sys
+import time
+import json
+import torch
+import torch.nn as nn
+from PIL import Image
+from torchvision import transforms
+import timm
+
+def load_class_names(class_names_path):
+    """Loads class names from JSON file."""
+    if not os.path.exists(class_names_path):
+        raise FileNotFoundError(f"Class names file not found at {class_names_path}")
+    with open(class_names_path, 'r', encoding='utf-8') as f:
+        class_names = json.load(f)
+    return class_names
+
+def initialize_model(model_name, num_classes, weights_path, device):
+    """Initializes MobileViT model and loads pretrained/trained weights."""
+    print(f"Initializing {model_name}...")
+    model = timm.create_model(model_name, pretrained=False)
+    
+    # Adapt head classifier
+    num_features = model.head.fc.in_features
+    model.head.fc = nn.Linear(num_features, num_classes)
+    
+    if not os.path.exists(weights_path):
+        raise FileNotFoundError(f"Trained model weights not found at {weights_path}")
+    
+    # Load model weights (handling GPU to CPU mapping if necessary)
+    state_dict = torch.load(weights_path, map_location=device)
+    model.load_state_dict(state_dict)
+    model = model.to(device)
+    model.eval()
+    print("Model initialized and weights loaded successfully.")
+    return model
+
+def is_leaf_image(image_path, threshold=0.08):
+    """Detects if the image is a leaf based on color profile (green, yellow, brown)."""
+    try:
+        image = Image.open(image_path).convert('RGB')
+        small_img = image.resize((50, 50))
+        pixels = list(small_img.getdata())
+        
+        leaf_count = 0
+        total = len(pixels)
+        
+        for r, g, b in pixels:
+            # Green check: G is dominant
+            is_green = (g > r) and (g > b) and (g > 35)
+            
+            # Yellow/Brown check (diseased/dry spots)
+            is_brown = (r > 1.15 * b) and (g > 1.15 * b) and (g > 40) and (r > 40) and (b < 160)
+            
+            # Yellow leaf check
+            is_yellow = (r > 1.1 * g) and (g > 1.1 * b) and (g > 50) and (b < 120)
+            
+            if is_green or is_brown or is_yellow:
+                leaf_count += 1
+                
+        ratio = leaf_count / total
+        print(f"DEBUG: Leaf color ratio: {ratio:.4f}")
+        return ratio >= threshold
+    except Exception as e:
+        print(f"DEBUG: Leaf checking failed: {e}")
+        return True
+
+def preprocess_image(image_path, image_size=224):
+    """Loads and preprocesses a single image for MobileViT input."""
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"Image file not found at {image_path}")
+    
+    try:
+        image = Image.open(image_path).convert('RGB')
+    except Exception as e:
+        raise ValueError(f"Failed to load or parse image: {e}")
+        
+    preprocess = transforms.Compose([
+        transforms.Resize((image_size, image_size)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    
+    input_tensor = preprocess(image)
+    return input_tensor.unsqueeze(0) # Add batch dimension
+
+def predict(model, input_tensor, class_names, device):
+    """Performs inference and returns top predictions and timing."""
+    input_tensor = input_tensor.to(device)
+    
+    start_time = time.time()
+    with torch.no_grad():
+        outputs = model(input_tensor)
+        probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
+    prediction_time = time.time() - start_time
+    
+    # Get top 3 predictions
+    top_prob, top_catid = torch.topk(probabilities, min(3, len(class_names)))
+    
+    predictions = []
+    for i in range(top_prob.size(0)):
+        idx = top_catid[i].item()
+        predictions.append({
+            "class_name": class_names[idx],
+            "confidence": top_prob[i].item()
+        })
+        
+    return predictions, prediction_time
+
+def main():
+    # Helper to check arguments
+    if len(sys.argv) < 2:
+        print("Usage: python inference.py <image_path> [weights_path] [class_names_path]")
+        sys.exit(1)
+        
+    image_path = sys.argv[1]
+    weights_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(__file__), "best_model.pth")
+    class_names_path = sys.argv[3] if len(sys.argv) > 3 else os.path.join(os.path.dirname(__file__), "class_names.json")
+    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Running inference on device: {device}")
+    
+    try:
+        # Load classes
+        class_names = load_class_names(class_names_path)
+        num_classes = len(class_names)
+        
+        # Initialize model
+        model = initialize_model("mobilevit_s", num_classes, weights_path, device)
+        
+        # Load & preprocess image
+        input_tensor = preprocess_image(image_path)
+        
+        # Run prediction
+        top_predictions, inference_time = predict(model, input_tensor, class_names, device)
+        
+        # Detect if it is a leaf
+        is_leaf = is_leaf_image(image_path)
+        
+        # Output results
+        print("\n================ INFERENCE RESULTS ================")
+        print(f"Primary Disease Name: {top_predictions[0]['class_name']}")
+        print(f"Confidence Score:     {top_predictions[0]['confidence'] * 100:.2f}%")
+        print(f"Is Leaf:              {is_leaf}")
+        print(f"Prediction Time:      {inference_time * 1000:.2f} ms")
+        print("---------------------------------------------------")
+        print("Top 3 Predictions:")
+        for idx, pred in enumerate(top_predictions, 1):
+            print(f"  {idx}. {pred['class_name']}: {pred['confidence'] * 100:.2f}%")
+        print("====================================================")
+        
+    except Exception as e:
+        print(f"Error during inference execution: {e}", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
