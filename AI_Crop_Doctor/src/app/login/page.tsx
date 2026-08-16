@@ -222,25 +222,79 @@ export default function LoginScreen() {
     }
   };
 
+  // Neon field style helper
+  const fieldStyle = {
+    background: "oklch(1 0 0 / 5%)",
+    border: "1px solid oklch(1 0 0 / 10%)",
+    color: "oklch(0.95 0.015 180)",
+    outline: "none",
+  } as const;
+
   return (
-    <div className="relative flex min-h-screen flex-col justify-between bg-background overflow-x-hidden pb-10">
-      {/* Dynamic colorful mesh background */}
+    <div
+      className="relative flex min-h-screen flex-col justify-between overflow-x-hidden pb-10"
+      style={{ background: "oklch(0.09 0.018 250)" }}
+    >
+      {/* Cyber grid bg */}
       <div
-        className="pointer-events-none absolute -left-1/4 top-0 -z-10 size-[150%] opacity-40 blur-3xl bg-[radial-gradient(ellipse_at_top,_var(--color-primary-soft)_0%,_transparent_55%),_radial-gradient(ellipse_at_bottom,_var(--color-accent-soft)_0%,_transparent_60%)]"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-40"
         aria-hidden
+        style={{
+          backgroundImage:
+            "linear-gradient(oklch(0.72 0.2 152 / 2%) 1px, transparent 1px), linear-gradient(90deg, oklch(0.72 0.2 152 / 2%) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      />
+      {/* Radial top glow */}
+      <div
+        className="pointer-events-none absolute -left-1/4 top-0 -z-10 opacity-60"
+        aria-hidden
+        style={{
+          width: "150%",
+          height: "60%",
+          background:
+            "radial-gradient(ellipse at 50% 0%, oklch(0.72 0.2 152 / 0.12) 0%, transparent 65%)",
+        }}
+      />
+      {/* Bottom cyan glow */}
+      <div
+        className="pointer-events-none absolute bottom-0 right-0 -z-10 opacity-40"
+        aria-hidden
+        style={{
+          width: "60%",
+          height: "40%",
+          background:
+            "radial-gradient(ellipse at 100% 100%, oklch(0.78 0.18 180 / 0.15) 0%, transparent 65%)",
+        }}
       />
 
       {/* Header bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between px-5 py-4 backdrop-blur-md">
+      <header
+        className="sticky top-0 z-30 flex items-center justify-between px-5 py-4"
+        style={{
+          background: "oklch(0.09 0.018 250 / 0.8)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          borderBottom: "1px solid oklch(1 0 0 / 6%)",
+        }}
+      >
         <button
           onClick={() => router.push("/")}
-          className="flex size-10 items-center justify-center rounded-xl bg-secondary text-secondary-foreground shadow-[0_3px_0_var(--color-border)] active:shadow-none active:translate-y-[3px] transition-all"
+          className="flex size-10 items-center justify-center rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
           aria-label="Go Back"
+          style={{
+            background: "oklch(1 0 0 / 6%)",
+            border: "1px solid oklch(1 0 0 / 10%)",
+            color: "oklch(0.8 0.04 200)",
+          }}
         >
           <ChevronLeft className="size-5" />
         </button>
-        <span className="font-display text-sm font-bold text-muted-foreground uppercase tracking-widest">
-          Auth Portal
+        <span
+          className="text-[10px] font-bold uppercase tracking-[0.3em]"
+          style={{ color: "oklch(0.72 0.2 152)", fontFamily: "var(--font-mono)" }}
+        >
+          ◈ Auth Portal
         </span>
         <div className="w-10" aria-hidden />
       </header>
@@ -249,30 +303,79 @@ export default function LoginScreen() {
       <main className="flex flex-1 items-center justify-center px-6 py-4">
         {isSuccess ? (
           /* SUCCESS STATE */
-          <div className="surface-lift animate-rise flex w-full max-w-md flex-col items-center justify-center p-8 text-center bg-card/90 backdrop-blur">
-            <div className="relative flex size-24 items-center justify-center rounded-full bg-success shadow-[0_4px_0_oklch(0.45_0.13_150)] animate-bounce">
-              <Check className="size-10 text-success-foreground" strokeWidth={3} />
+          <div
+            className="animate-rise flex w-full max-w-md flex-col items-center justify-center p-8 text-center rounded-3xl"
+            style={{
+              background: "oklch(1 0 0 / 5%)",
+              border: "1px solid oklch(0.72 0.2 152 / 0.4)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              boxShadow: "0 0 40px oklch(0.72 0.2 152 / 0.2)",
+            }}
+          >
+            <div
+              className="relative flex size-24 items-center justify-center rounded-full animate-bounce"
+              style={{
+                background: "linear-gradient(135deg, oklch(0.72 0.2 152) 0%, oklch(0.65 0.18 165) 100%)",
+                boxShadow: "0 0 30px oklch(0.72 0.2 152 / 0.6), 0 4px 0 oklch(0.35 0.12 152)",
+              }}
+            >
+              <Check className="size-10" style={{ color: "oklch(0.08 0.02 152)" }} strokeWidth={3} />
             </div>
-            <h2 className="mt-6 font-display text-2xl font-bold">Welcome Back!</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <h2
+              className="mt-6 font-display text-2xl font-bold"
+              style={{ color: "oklch(0.95 0.015 180)" }}
+            >
+              Welcome Back!
+            </h2>
+            <p className="mt-2 text-sm" style={{ color: "oklch(0.6 0.04 200)" }}>
               You are signed in successfully. Syncing your profile and starting diagnosis...
             </p>
           </div>
         ) : isLoading ? (
           /* LOADING STATE */
-          <div className="surface-lift animate-rise flex w-full max-w-md flex-col items-center justify-center p-8 text-center bg-card/90 backdrop-blur">
+          <div
+            className="animate-rise flex w-full max-w-md flex-col items-center justify-center p-8 text-center rounded-3xl"
+            style={{
+              background: "oklch(1 0 0 / 5%)",
+              border: "1px solid oklch(0.72 0.2 152 / 0.3)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+            }}
+          >
             <div className="relative flex size-20 items-center justify-center">
-              <span className="absolute inset-0 animate-ring rounded-full bg-primary/20" />
-              <Loader2 className="relative size-10 animate-spin text-primary" />
-            </div>
-            <h2 className="mt-6 font-display text-lg font-bold">Synchronizing...</h2>
-            <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full bg-primary transition-all duration-700"
-                style={{ width: `${((loaderStep + 1) / (loadingSteps.length + 1)) * 100}%` }}
+              <span
+                className="absolute inset-0 animate-ring rounded-full"
+                style={{ background: "oklch(0.72 0.2 152 / 0.25)" }}
+              />
+              <Loader2
+                className="relative size-10 animate-spin"
+                style={{ color: "oklch(0.72 0.2 152)", filter: "drop-shadow(0 0 8px oklch(0.72 0.2 152 / 0.6))" }}
               />
             </div>
-            <p className="mt-3 text-xs text-muted-foreground animate-pulse leading-relaxed">
+            <h2
+              className="mt-6 font-display text-lg font-bold"
+              style={{ color: "oklch(0.95 0.015 180)" }}
+            >
+              Synchronizing...
+            </h2>
+            <div
+              className="mt-4 h-1.5 w-full overflow-hidden rounded-full"
+              style={{ background: "oklch(1 0 0 / 8%)" }}
+            >
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${((loaderStep + 1) / (loadingSteps.length + 1)) * 100}%`,
+                  background: "linear-gradient(90deg, oklch(0.72 0.2 152), oklch(0.78 0.18 180))",
+                  boxShadow: "0 0 8px oklch(0.72 0.2 152 / 0.6)",
+                }}
+              />
+            </div>
+            <p
+              className="mt-3 text-xs animate-pulse leading-relaxed"
+              style={{ color: "oklch(0.6 0.04 200)", fontFamily: "var(--font-mono)" }}
+            >
               {loadingSteps[loaderStep] || "Finishing sync setup..."}
             </p>
           </div>
@@ -288,33 +391,81 @@ export default function LoginScreen() {
                 tilt.x === 0 && tilt.y === 0
                   ? "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)"
                   : "transform 0.05s ease-out",
+              background: "oklch(1 0 0 / 5%)",
+              border: "1px solid oklch(1 0 0 / 12%)",
+              backdropFilter: "blur(24px) saturate(180%)",
+              WebkitBackdropFilter: "blur(24px) saturate(180%)",
+              boxShadow:
+                "0 0 60px oklch(0.72 0.2 152 / 0.1), 0 8px 32px oklch(0 0 0 / 0.5), inset 0 1px 0 oklch(1 0 0 / 0.08)",
             }}
-            className={`surface-lift flex w-full max-w-md flex-col p-6 backdrop-blur bg-card/85 transition-shadow duration-300 hover:shadow-2xl border border-white/20 dark:border-white/10 ${isShaking ? "animate-shake" : ""}`}
+            className={`flex w-full max-w-md flex-col p-6 rounded-3xl ${isShaking ? "animate-shake" : ""}`}
           >
+            {/* Holographic shimmer overlay */}
+            <div
+              className="pointer-events-none absolute inset-0 rounded-3xl opacity-30 animate-holo"
+              aria-hidden
+              style={{
+                background:
+                  "linear-gradient(135deg, oklch(0.72 0.2 152 / 0.06) 0%, oklch(0.78 0.18 180 / 0.06) 33%, oklch(0.78 0.18 75 / 0.04) 66%, oklch(0.72 0.2 152 / 0.06) 100%)",
+                backgroundSize: "300% 300%",
+              }}
+            />
+
             {/* Swaying logo */}
-            <div className="mx-auto flex size-24 items-center justify-center rounded-[2rem] bg-primary-soft shadow-lift relative">
+            <div
+              className="relative mx-auto flex size-24 items-center justify-center rounded-[2rem]"
+              style={{
+                background: "oklch(0.72 0.2 152 / 0.12)",
+                border: "1px solid oklch(0.72 0.2 152 / 0.4)",
+                boxShadow: "0 0 24px oklch(0.72 0.2 152 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.1)",
+              }}
+            >
               <img
                 src={typeof leaf3d === "string" ? leaf3d : leaf3d.src}
                 alt="AI Crop Doctor 3D Logo"
-                className="size-16 animate-leaf"
+                className="size-16 animate-leaf relative z-10"
+                style={{ filter: "drop-shadow(0 0 12px oklch(0.72 0.2 152 / 0.7))" }}
               />
-              <span className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-lg bg-card shadow-soft text-xs">
+              <span
+                className="absolute -bottom-1.5 -right-1.5 flex size-8 items-center justify-center rounded-xl text-sm"
+                style={{
+                  background: "oklch(0.78 0.18 75)",
+                  boxShadow: "0 0 10px oklch(0.78 0.18 75 / 0.5), 0 2px 0 oklch(0.5 0.15 45)",
+                }}
+              >
                 🌾
               </span>
             </div>
 
-            <h1 className="mt-4 text-center font-display text-2xl font-bold">AI Crop Doctor</h1>
-            <p className="text-center text-xs text-muted-foreground mt-0.5">
-              Secure Cloud Backup & Smart Agronomy
+            <h1
+              className="mt-5 text-center font-display text-2xl font-bold"
+              style={{ color: "oklch(0.95 0.015 180)", letterSpacing: "-0.02em" }}
+            >
+              AI Crop Doctor
+            </h1>
+            <p
+              className="text-center text-[10px] mt-1 uppercase tracking-widest"
+              style={{ color: "oklch(0.72 0.2 152)", fontFamily: "var(--font-mono)" }}
+            >
+              ◈ Secure Cloud Sync · Smart Agronomy
             </p>
 
             {/* Sliding Tabs */}
-            <div className="relative mt-6 flex rounded-2xl bg-secondary/80 p-1.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.25)]">
+            <div
+              className="relative mt-6 flex rounded-2xl p-1.5"
+              style={{
+                background: "oklch(1 0 0 / 5%)",
+                border: "1px solid oklch(1 0 0 / 8%)",
+              }}
+            >
               <div
-                className={`absolute bottom-1.5 top-1.5 rounded-xl bg-card shadow-soft transition-all duration-300`}
+                className="absolute bottom-1.5 top-1.5 rounded-xl transition-all duration-300"
                 style={{
                   width: "calc(50% - 6px)",
                   left: activeTab === "login" ? "6px" : "calc(50%)",
+                  background: "linear-gradient(135deg, oklch(0.72 0.2 152 / 0.2) 0%, oklch(0.78 0.18 180 / 0.2) 100%)",
+                  border: "1px solid oklch(0.72 0.2 152 / 0.4)",
+                  boxShadow: "0 0 12px oklch(0.72 0.2 152 / 0.2)",
                 }}
               />
               <button
@@ -324,7 +475,11 @@ export default function LoginScreen() {
                   setValidationError("");
                   setSuccessMessage("");
                 }}
-                className={`relative z-10 flex-1 py-2 text-center text-xs font-bold transition-colors ${activeTab === "login" ? "text-primary" : "text-muted-foreground"}`}
+                className="relative z-10 flex-1 py-2 text-center text-xs font-bold uppercase tracking-wider transition-all"
+                style={{
+                  color: activeTab === "login" ? "oklch(0.72 0.2 152)" : "oklch(0.5 0.04 200)",
+                  fontFamily: "var(--font-mono)",
+                }}
               >
                 Sign In
               </button>
@@ -335,80 +490,160 @@ export default function LoginScreen() {
                   setValidationError("");
                   setSuccessMessage("");
                 }}
-                className={`relative z-10 flex-1 py-2 text-center text-xs font-bold transition-colors ${activeTab === "signup" ? "text-primary" : "text-muted-foreground"}`}
+                className="relative z-10 flex-1 py-2 text-center text-xs font-bold uppercase tracking-wider transition-all"
+                style={{
+                  color: activeTab === "signup" ? "oklch(0.72 0.2 152)" : "oklch(0.5 0.04 200)",
+                  fontFamily: "var(--font-mono)",
+                }}
               >
-                Create Account
+                Register
               </button>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
               {validationError && (
-                <p className="text-xs font-medium text-destructive animate-fade-in text-center bg-destructive-soft py-2 px-3 rounded-xl border border-destructive/20">
-                  ⚠️ {validationError}
+                <p
+                  className="text-xs font-medium text-center py-2 px-3 rounded-xl"
+                  style={{
+                    background: "oklch(0.65 0.22 27 / 0.1)",
+                    border: "1px solid oklch(0.65 0.22 27 / 0.3)",
+                    color: "oklch(0.65 0.22 27)",
+                  }}
+                >
+                  ⚠ {validationError}
                 </p>
               )}
 
               {successMessage && (
-                <p className="text-xs font-medium text-success animate-fade-in text-center bg-success-soft py-2 px-3 rounded-xl border border-success/20">
-                  ✅ {successMessage}
+                <p
+                  className="text-xs font-medium text-center py-2 px-3 rounded-xl"
+                  style={{
+                    background: "oklch(0.72 0.2 152 / 0.1)",
+                    border: "1px solid oklch(0.72 0.2 152 / 0.3)",
+                    color: "oklch(0.72 0.2 152)",
+                  }}
+                >
+                  ✓ {successMessage}
                 </p>
               )}
 
               {activeTab === "signup" && (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground pl-1">Full Name</label>
+                  <label
+                    className="text-[10px] font-bold pl-1 uppercase tracking-widest"
+                    style={{ color: "oklch(0.6 0.04 200)", fontFamily: "var(--font-mono)" }}
+                  >
+                    Full Name
+                  </label>
                   <div className="relative flex items-center">
-                    <UserIcon className="absolute left-3.5 size-4 text-muted-foreground pointer-events-none" />
+                    <UserIcon
+                      className="absolute left-3.5 size-4 pointer-events-none"
+                      style={{ color: "oklch(0.72 0.2 152)" }}
+                    />
                     <input
                       type="text"
                       placeholder="e.g. Ripan Samui"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="min-h-12 w-full rounded-2xl border border-input bg-background/55 pl-10 pr-4 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent transition-all"
+                      className="min-h-12 w-full rounded-2xl pl-10 pr-4 text-sm transition-all"
+                      style={{
+                        ...fieldStyle,
+                        boxShadow: "inset 0 1px 3px oklch(0 0 0 / 0.3)",
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.border = "1px solid oklch(0.72 0.2 152 / 0.6)";
+                        e.currentTarget.style.boxShadow = "0 0 0 3px oklch(0.72 0.2 152 / 0.15), inset 0 1px 3px oklch(0 0 0 / 0.3)";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.border = "1px solid oklch(1 0 0 / 10%)";
+                        e.currentTarget.style.boxShadow = "inset 0 1px 3px oklch(0 0 0 / 0.3)";
+                      }}
                     />
                   </div>
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-muted-foreground pl-1">
+                <label
+                  className="text-[10px] font-bold pl-1 uppercase tracking-widest"
+                  style={{ color: "oklch(0.6 0.04 200)", fontFamily: "var(--font-mono)" }}
+                >
                   Email Address
                 </label>
                 <div className="relative flex items-center">
-                  <Mail className="absolute left-3.5 size-4 text-muted-foreground pointer-events-none" />
+                  <Mail
+                    className="absolute left-3.5 size-4 pointer-events-none"
+                    style={{ color: "oklch(0.78 0.18 180)" }}
+                  />
                   <input
                     type="email"
                     placeholder="farmer@cropdoctor.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="min-h-12 w-full rounded-2xl border border-input bg-background/55 pl-10 pr-4 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent transition-all"
+                    className="min-h-12 w-full rounded-2xl pl-10 pr-4 text-sm transition-all"
+                    style={{
+                      ...fieldStyle,
+                      boxShadow: "inset 0 1px 3px oklch(0 0 0 / 0.3)",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.border = "1px solid oklch(0.78 0.18 180 / 0.6)";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px oklch(0.78 0.18 180 / 0.15), inset 0 1px 3px oklch(0 0 0 / 0.3)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.border = "1px solid oklch(1 0 0 / 10%)";
+                      e.currentTarget.style.boxShadow = "inset 0 1px 3px oklch(0 0 0 / 0.3)";
+                    }}
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center pl-1 pr-1">
-                  <label className="text-xs font-bold text-muted-foreground">Password</label>
+                  <label
+                    className="text-[10px] font-bold uppercase tracking-widest"
+                    style={{ color: "oklch(0.6 0.04 200)", fontFamily: "var(--font-mono)" }}
+                  >
+                    Password
+                  </label>
                   {activeTab === "login" && (
-                    <span className="text-[11px] font-semibold text-primary hover:underline cursor-pointer">
-                      Forgot Password?
+                    <span
+                      className="text-[10px] font-bold cursor-pointer hover:opacity-80 transition-opacity uppercase tracking-wider"
+                      style={{ color: "oklch(0.72 0.2 152)" }}
+                    >
+                      Forgot?
                     </span>
                   )}
                 </div>
                 <div className="relative flex items-center">
-                  <Lock className="absolute left-3.5 size-4 text-muted-foreground pointer-events-none" />
+                  <Lock
+                    className="absolute left-3.5 size-4 pointer-events-none"
+                    style={{ color: "oklch(0.72 0.2 152)" }}
+                  />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="min-h-12 w-full rounded-2xl border border-input bg-background/55 pl-10 pr-11 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent transition-all"
+                    className="min-h-12 w-full rounded-2xl pl-10 pr-11 text-sm transition-all"
+                    style={{
+                      ...fieldStyle,
+                      boxShadow: "inset 0 1px 3px oklch(0 0 0 / 0.3)",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.border = "1px solid oklch(0.72 0.2 152 / 0.6)";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px oklch(0.72 0.2 152 / 0.15), inset 0 1px 3px oklch(0 0 0 / 0.3)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.border = "1px solid oklch(1 0 0 / 10%)";
+                      e.currentTarget.style.boxShadow = "inset 0 1px 3px oklch(0 0 0 / 0.3)";
+                    }}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-3.5 flex items-center justify-center transition-colors hover:opacity-80"
+                    style={{ color: "oklch(0.6 0.04 200)" }}
                   >
                     {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
@@ -420,17 +655,26 @@ export default function LoginScreen() {
                 <button
                   type="button"
                   onClick={handleQuickFill}
-                  className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                  className="text-[10px] font-bold transition-all hover:opacity-80 flex items-center gap-1"
+                  style={{ color: "oklch(0.78 0.18 75)", fontFamily: "var(--font-mono)" }}
                 >
                   ⚡ Auto-fill Demo
                 </button>
               </div>
 
-              {/* Main Submit 3D Button */}
-              <div className="pt-2">
+              {/* Main Submit 3D Neon Button */}
+              <div className="pt-1">
                 <button
                   type="submit"
-                  className="relative w-full py-3.5 px-5 rounded-2xl bg-primary text-primary-foreground font-semibold font-display shadow-[0_5px_0_oklch(0.35_0.1_152)] hover:shadow-[0_6px_0_oklch(0.35_0.1_152)] active:shadow-[0_1px_0_oklch(0.35_0.1_152)] active:translate-y-[4px] transition-all hover:bg-primary/95 flex items-center justify-center gap-2 cursor-pointer"
+                  className="relative w-full py-3.5 px-5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, oklch(0.72 0.2 152) 0%, oklch(0.65 0.18 165) 100%)",
+                    color: "oklch(0.08 0.02 152)",
+                    boxShadow:
+                      "0 0 20px oklch(0.72 0.2 152 / 0.5), 0 5px 0 oklch(0.35 0.12 152), inset 0 1px 0 oklch(1 0 0 / 0.3)",
+                    fontFamily: "var(--font-display)",
+                  }}
                 >
                   <span>{activeTab === "login" ? "Sign In" : "Register"}</span>
                   <ArrowRight className="size-4" />
@@ -439,18 +683,41 @@ export default function LoginScreen() {
             </form>
 
             {/* Separator */}
-            <div className="my-5 flex items-center gap-3 text-muted-foreground">
-              <span className="h-px flex-1 bg-border" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Or Sync With</span>
-              <span className="h-px flex-1 bg-border" />
+            <div className="my-5 flex items-center gap-3">
+              <span
+                className="h-px flex-1"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, oklch(1 0 0 / 12%), transparent)",
+                }}
+              />
+              <span
+                className="text-[9px] font-bold uppercase tracking-[0.2em]"
+                style={{ color: "oklch(0.5 0.04 200)", fontFamily: "var(--font-mono)" }}
+              >
+                Or Sync With
+              </span>
+              <span
+                className="h-px flex-1"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, oklch(1 0 0 / 12%), transparent)",
+                }}
+              />
             </div>
 
-            {/* Social 3D Buttons */}
+            {/* Social Buttons */}
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => handleSocialLogin("Google")}
-                className="relative py-2.5 px-4 rounded-xl border border-border bg-card text-foreground text-xs font-semibold shadow-[0_3px_0_oklch(0.9_0.015_110)] active:shadow-[0_1px_0_oklch(0.9_0.015_110)] active:translate-y-[2px] transition-all hover:bg-muted flex items-center justify-center gap-2 cursor-pointer"
+                className="relative py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                style={{
+                  background: "oklch(1 0 0 / 5%)",
+                  border: "1px solid oklch(1 0 0 / 10%)",
+                  color: "oklch(0.9 0.015 180)",
+                  backdropFilter: "blur(8px)",
+                }}
               >
                 <svg viewBox="0 0 24 24" className="size-4 shrink-0" aria-hidden="true">
                   <path
@@ -475,12 +742,19 @@ export default function LoginScreen() {
               <button
                 type="button"
                 onClick={() => handleSocialLogin("Apple")}
-                className="relative py-2.5 px-4 rounded-xl border border-border bg-card text-foreground text-xs font-semibold shadow-[0_3px_0_oklch(0.9_0.015_110)] active:shadow-[0_1px_0_oklch(0.9_0.015_110)] active:translate-y-[2px] transition-all hover:bg-muted flex items-center justify-center gap-2 cursor-pointer"
+                className="relative py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-95"
+                style={{
+                  background: "oklch(1 0 0 / 5%)",
+                  border: "1px solid oklch(1 0 0 / 10%)",
+                  color: "oklch(0.9 0.015 180)",
+                  backdropFilter: "blur(8px)",
+                }}
               >
                 <svg
                   viewBox="0 0 24 24"
-                  className="size-4 fill-current text-foreground shrink-0"
+                  className="size-4 fill-current shrink-0"
                   aria-hidden="true"
+                  style={{ color: "oklch(0.9 0.015 180)" }}
                 >
                   <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.93.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.72 1.09zm3.844-3.58c.844-1.024 1.403-2.44 1.247-3.85-1.208.052-2.678.805-3.538 1.83-1.247 1.48-1.169 2.899-.987 3.81 1.35.104 2.72-.78 3.278-1.79z" />
                 </svg>
@@ -491,16 +765,22 @@ export default function LoginScreen() {
             {/* Guest Entry Link */}
             <button
               onClick={() => router.push("/home")}
-              className="mt-6 text-center text-xs font-semibold text-muted-foreground hover:text-primary transition-colors underline cursor-pointer"
+              className="mt-6 text-center text-[10px] font-bold cursor-pointer transition-all hover:opacity-70 uppercase tracking-widest"
+              style={{ color: "oklch(0.5 0.04 200)", fontFamily: "var(--font-mono)" }}
             >
-              Skip and Enter as Guest
+              ◈ Skip — Enter as Guest
             </button>
           </div>
         )}
       </main>
 
-      {/* Footer copyright */}
-      <footer className="text-center text-[10px] text-muted-foreground">AI Crop Doctor</footer>
+      {/* Footer */}
+      <footer
+        className="text-center text-[9px] font-bold uppercase tracking-[0.3em]"
+        style={{ color: "oklch(0.35 0.04 200)", fontFamily: "var(--font-mono)" }}
+      >
+        AI CROP DOCTOR © 2025
+      </footer>
     </div>
   );
 }
