@@ -45,55 +45,33 @@ export interface AppState {
 }
 
 const KEY = "acd.state.v1";
+/** Keys that are safe to persist in localStorage (NEVER include `user`) */
+const PERSIST_KEYS: (keyof AppState)[] = [
+  "onboarded",
+  "sowingDate",
+  "profile",
+  "history",
+  "customReminders",
+  "disabledReminderIds",
+  "lastResult",
+];
 
 function seedState(): AppState {
   const today = startOfDay(new Date());
   return {
     onboarded: false,
-    user: null,
-    // Demo field: sown 39 days ago -> currently fruiting stage.
+    user: null, // ALWAYS null on cold start — Supabase session sets this
     sowingDate: addDays(today, -39).toISOString(),
     profile: {
-      name: "Ripan Samui",
-      region: "Nadia, West Bengal",
+      name: "",
+      region: "",
       language: "en",
-      crops: ["tomato"],
+      crops: [],
       notifications: true,
       voiceGuidance: true,
       units: "metric",
     },
-    history: [
-      {
-        id: "h1",
-        date: addDays(today, -1).toISOString(),
-        crop: "Tomato",
-        disease: "Early Blight",
-        confidence: 0.946,
-        stage: "G2",
-        lesionPct: 22,
-        image: "",
-      },
-      {
-        id: "h2",
-        date: addDays(today, -9).toISOString(),
-        crop: "Tomato",
-        disease: "Healthy Tomato Leaf",
-        confidence: 0.912,
-        stage: "G0",
-        lesionPct: 0,
-        image: "",
-      },
-      {
-        id: "h3",
-        date: addDays(today, -21).toISOString(),
-        crop: "Tomato",
-        disease: "Leaf Mold",
-        confidence: 0.784,
-        stage: "G1",
-        lesionPct: 8,
-        image: "",
-      },
-    ],
+    history: [],
     customReminders: [],
     disabledReminderIds: [],
     lastResult: null,
@@ -133,7 +111,13 @@ function hydrate() {
   hydrated = true;
   try {
     const raw = window.localStorage.getItem(KEY);
-    if (raw) state = { ...state, ...(JSON.parse(raw) as AppState) };
+    if (raw) {
+      const saved = JSON.parse(raw) as Partial<AppState>;
+      // SECURITY: Never restore `user` from localStorage.
+      // Auth state is ONLY set by Supabase's onAuthStateChange.
+      delete saved.user;
+      state = { ...state, ...saved };
+    }
   } catch {
     /* ignore corrupt storage */
   }
@@ -142,7 +126,12 @@ function hydrate() {
 function persist() {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(state));
+    // Only persist safe, non-auth keys
+    const toSave = PERSIST_KEYS.reduce(
+      (acc, key) => ({ ...acc, [key]: state[key] }),
+      {} as Partial<AppState>,
+    );
+    window.localStorage.setItem(KEY, JSON.stringify(toSave));
   } catch {
     /* storage full / unavailable */
   }

@@ -14,7 +14,6 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import leaf3d from "@/assets/leaf-3d.png";
-import { loginUser } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginScreen() {
@@ -93,7 +92,7 @@ export default function LoginScreen() {
 
     if (!validateForm()) {
       setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 300); // Reset shake animation
+      setTimeout(() => setIsShaking(false), 300);
       return;
     }
 
@@ -116,6 +115,11 @@ export default function LoginScreen() {
           setTimeout(() => setIsShaking(false), 300);
           return;
         }
+
+        // Supabase session created — onAuthStateChange in store.ts will set the
+        // user automatically. Show the success state then redirect.
+        setIsLoading(false);
+        setIsSuccess(true);
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -130,7 +134,8 @@ export default function LoginScreen() {
           return;
         }
 
-        // If auto-logged in, immediately log them out locally to require manual sign in
+        // If Supabase auto-logged the new user in, sign them out locally so
+        // they must explicitly sign in (cleaner UX + email verification flow).
         if (data.session) {
           await supabase.auth.signOut({ scope: "local" });
         }
@@ -146,7 +151,6 @@ export default function LoginScreen() {
         } else {
           setSuccessMessage("Account created successfully! Please sign in with your credentials.");
         }
-        return;
       }
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : "An unexpected error occurred";
@@ -157,30 +161,14 @@ export default function LoginScreen() {
     }
   };
 
-  // Multi-stage loader steps simulation
+  // Animate loader steps while waiting for Supabase (visual feedback only)
   useEffect(() => {
     if (!isLoading) return;
-
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
     if (loaderStep < loadingSteps.length) {
-      timer = setTimeout(() => {
-        setLoaderStep((prev) => prev + 1);
-      }, 900);
-    } else {
-      // Completed all steps: show success checkmark!
-      setIsLoading(false);
-      setIsSuccess(true);
-
-      // Update global application store
-      const displayName = activeTab === "signup" ? name : email.split("@")[0] || "";
-      loginUser(email, displayName);
+      const timer = setTimeout(() => setLoaderStep((prev) => prev + 1), 900);
+      return () => clearTimeout(timer);
     }
-
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [isLoading, loaderStep, activeTab, name, email]);
+  }, [isLoading, loaderStep]);
 
   // Redirect to home when login succeeds
   useEffect(() => {
@@ -213,16 +201,6 @@ export default function LoginScreen() {
     }
   };
 
-  // Quick fill helper for easy testing
-  const handleQuickFill = () => {
-    setEmail("farmer@cropdoctor.com");
-    setPassword("admin123");
-    if (activeTab === "signup") {
-      setName("Ripan Samui");
-    }
-  };
-
-  // Neon field style helper
   const fieldStyle = {
     background: "oklch(1 0 0 / 5%)",
     border: "1px solid oklch(1 0 0 / 10%)",
@@ -650,19 +628,6 @@ export default function LoginScreen() {
                 </div>
               </div>
 
-              {/* Quick Fill Button */}
-              <div className="flex justify-end pr-1">
-                <button
-                  type="button"
-                  onClick={handleQuickFill}
-                  className="text-[10px] font-bold transition-all hover:opacity-80 flex items-center gap-1"
-                  style={{ color: "oklch(0.78 0.18 75)", fontFamily: "var(--font-mono)" }}
-                >
-                  ⚡ Auto-fill Demo
-                </button>
-              </div>
-
-              {/* Main Submit 3D Neon Button */}
               <div className="pt-1">
                 <button
                   type="submit"
