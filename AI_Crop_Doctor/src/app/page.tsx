@@ -1,25 +1,47 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppState } from "@/lib/store";
-import { Loader2 } from "lucide-react";
+import IntroSplash from "@/components/intro-splash";
+
+/** Show intro once per browser session — not on every navigation. */
+const SEEN_KEY = "acd.intro.seen";
 
 export default function RootRedirect() {
   const router = useRouter();
   const { user } = useAppState();
+  const [showIntro, setShowIntro] = useState<boolean | null>(null);
 
+  // Determine on the client whether to show the intro
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    } else {
-      router.push("/home");
-    }
-  }, [user, router]);
+    if (typeof window === "undefined") return;
+    const alreadySeen = sessionStorage.getItem(SEEN_KEY) === "1";
+    setShowIntro(!alreadySeen);
+  }, []);
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background">
-      <Loader2 className="size-10 animate-spin text-primary" />
-    </main>
-  );
+  const handleIntroComplete = useCallback(() => {
+    sessionStorage.setItem(SEEN_KEY, "1");
+    setShowIntro(false);
+  }, []);
+
+  // Once intro is done (or skipped), navigate to the correct page
+  useEffect(() => {
+    if (showIntro !== false) return; // still loading or playing intro
+    if (user) {
+      router.push("/home");
+    } else {
+      router.push("/login");
+    }
+  }, [showIntro, user, router]);
+
+  // Null = hydrating (prevents flash)
+  if (showIntro === null) return null;
+
+  if (showIntro) {
+    return <IntroSplash onComplete={handleIntroComplete} />;
+  }
+
+  // Transitioning — render nothing (navigation is in progress)
+  return null;
 }

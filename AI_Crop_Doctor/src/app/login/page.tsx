@@ -762,14 +762,7 @@ export default function LoginScreen() {
               </button>
             </div>
 
-            {/* Guest Entry Link */}
-            <button
-              onClick={() => router.push("/home")}
-              className="mt-6 text-center text-[10px] font-bold cursor-pointer transition-all hover:opacity-70 uppercase tracking-widest"
-              style={{ color: "oklch(0.5 0.04 200)", fontFamily: "var(--font-mono)" }}
-            >
-              ◈ Skip — Enter as Guest
-            </button>
+
           </div>
         )}
       </main>

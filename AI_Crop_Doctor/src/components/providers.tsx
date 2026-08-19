@@ -28,26 +28,20 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!sessionChecked) return;
 
-    // Only truly protected routes that need a logged-in user.
-    // The app supports guest mode for all main pages, so we do NOT
-    // redirect guests away from /home, /diagnose, etc.
-    // We only redirect away from the root "/" if unauthenticated.
     const isLoginRoute = pathname === "/login";
     const isRootRoute = pathname === "/";
 
-    // If already logged in and on login page → go home
-    if (user && isLoginRoute) {
+    // If already logged in and on login page → go to home
+    if (user && (isLoginRoute || isRootRoute)) {
       router.push("/home");
       return;
     }
 
-    // Root "/" always redirects: guests → login, users → home
-    if (isRootRoute) {
-      router.push(user ? "/home" : "/login");
+    // ALL routes (except /login itself) are protected.
+    // Unauthenticated users MUST log in — no guest access allowed.
+    if (!user && !isLoginRoute) {
+      router.push("/login");
     }
-
-    // All other routes (/home, /diagnose, /calendar, /assistant, /profile, /result, etc.)
-    // are accessible in guest mode — no forced redirect.
   }, [user, pathname, router, sessionChecked]);
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;

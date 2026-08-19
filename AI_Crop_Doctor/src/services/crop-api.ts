@@ -97,6 +97,32 @@ export async function verifyImage(file: File | null): Promise<QualityResponse> {
   }
 
   await delay(1200);
+
+  // ── Mock leaf check ────────────────────────────────────────────────────
+  // If a real file was uploaded (not a demo sample), reject it — the mock
+  // cannot run the real MobileViT inference, so we only allow demo samples.
+  // Demo samples are File objects with size === 0 created by selectDemoSample().
+  if (file && file.size > 0) {
+    // Real upload in mock mode: perform a lightweight file-size sanity check.
+    // Files smaller than 8 KB are likely not real leaf photos.
+    if (file.size < 8192) {
+      return {
+        valid: false,
+        checks: [
+          { label: "Leaf visible in frame", passed: false },
+          { label: "Image sharpness", passed: false },
+          { label: "Brightness", passed: true },
+          { label: "Suitable crop image", passed: false },
+        ],
+        issue: QUALITY_ISSUES["blurry"]!,
+      };
+    }
+    // For a real file upload in mock mode, we cannot verify it is a leaf.
+    // The real /api/verify-image route handles this when the server is live.
+    // In mock mode we pass it through to allow testing, but the diagnose
+    // fallback will return is_leaf: false for unrecognised images.
+  }
+
   const checks = [
     { label: "Leaf visible in frame", passed: true },
     { label: "Image sharpness", passed: true },
@@ -184,6 +210,7 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
         ],
         stage: "G2",
         lesionPct: 28,
+        is_leaf: true,
         model: "MobileViT Small · PyTorch",
       };
     }
@@ -199,6 +226,7 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
         ],
         stage: "G1",
         lesionPct: 9,
+        is_leaf: true,
         model: "MobileViT Small · PyTorch",
       };
     }
@@ -213,6 +241,7 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
         ],
         stage: "G3",
         lesionPct: 55,
+        is_leaf: true,
         model: "MobileViT Small · PyTorch",
       };
     }
@@ -227,6 +256,7 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
         ],
         stage: "G2",
         lesionPct: 32,
+        is_leaf: true,
         model: "MobileViT Small · PyTorch",
       };
     }
@@ -241,6 +271,7 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
         ],
         stage: "G0",
         lesionPct: 0,
+        is_leaf: true,
         model: "MobileViT Small · PyTorch",
       };
     }
@@ -256,6 +287,7 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
         ],
         stage: "G3",
         lesionPct: 62,
+        is_leaf: true,
         model: "MobileViT Small · PyTorch",
       };
     }
@@ -271,12 +303,31 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
         ],
         stage: "G0",
         lesionPct: 0,
+        is_leaf: true,
         model: "MobileViT Small · PyTorch",
       };
     }
   }
 
-  // Fallback to default Tomato Early Blight
+  // ── Unrecognised upload in mock mode ────────────────────────────────────
+  // Any real image uploaded that doesn't match a known dataset filename is
+  // treated as "not a leaf" — is_leaf: false triggers the error screen.
+  // This prevents random photos (selfies, dogs, food, etc.) from silently
+  // returning a Tomato diagnosis.
+  if (file && file.size > 0) {
+    return {
+      crop: "Unknown",
+      disease: "Not a recognised crop leaf",
+      confidence: 0,
+      top_predictions: [],
+      stage: null,
+      lesionPct: null,
+      is_leaf: false,
+      model: "MobileViT Small · PyTorch",
+    };
+  }
+
+  // Fallback for the "Use general tomato sample leaf" button (file is null)
   return {
     crop: "Tomato",
     disease: "Early Blight",
@@ -288,6 +339,7 @@ export async function diagnose(file: File | null): Promise<DiagnosisResponse> {
     ],
     stage: "G2",
     lesionPct: 22,
+    is_leaf: true,
     model: "MobileViT Small · PyTorch",
   };
 }

@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
     const lines = stdout.split("\n");
     let primaryLabel = "";
     let confidence = 0.0;
-    let isLeaf = true;
+    let isLeaf = false;
     const topPredictions: { disease: string; confidence: number }[] = [];
 
     for (const line of lines) {
