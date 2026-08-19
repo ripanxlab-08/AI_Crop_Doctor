@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd AI_Crop_Doctor && npm install && npm run build",
+  "outputDirectory": "AI_Crop_Doctor/.next",
+  "installCommand": "cd AI_Crop_Doctor && npm install",
+  "framework": "nextjs"
+}
