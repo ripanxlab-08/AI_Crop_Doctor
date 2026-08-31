@@ -45,21 +45,24 @@ export function middleware(request: NextRequest) {
   }
 
   // Check for Supabase auth session cookie
-  // Supabase stores the session in a cookie named sb-<projectRef>-auth-token
   const cookies = request.cookies;
 
-  // Check all cookie names for Supabase session tokens
   let hasSession = false;
-  for (const [name] of cookies) {
-    if (
-      (name.includes("sb-") && name.includes("-auth-token")) ||
-      name === "sb-access-token" ||
-      name === "supabase-auth-token"
-    ) {
-      const cookieVal = cookies.get(name)?.value ?? "";
-      if (cookieVal.length > 20) {
-        hasSession = true;
-        break;
+  // Direct check for sb-access-token set by client store
+  if (cookies.has("sb-access-token") && (cookies.get("sb-access-token")?.value.length ?? 0) > 10) {
+    hasSession = true;
+  } else {
+    // Fallback search for any Supabase auth cookies
+    for (const cookie of cookies.getAll()) {
+      if (
+        cookie.name.includes("sb-") ||
+        cookie.name.includes("auth-token") ||
+        cookie.name.includes("supabase")
+      ) {
+        if (cookie.value && cookie.value.length > 10) {
+          hasSession = true;
+          break;
+        }
       }
     }
   }
@@ -67,7 +70,6 @@ export function middleware(request: NextRequest) {
   // If no Supabase session cookie found, redirect to login
   if (!hasSession) {
     const loginUrl = new URL("/login", request.url);
-    // Preserve the original destination so we can redirect back after login
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }

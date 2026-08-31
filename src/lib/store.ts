@@ -96,6 +96,9 @@ if (typeof window !== "undefined") {
         "Farmer";
       const token = session.access_token;
 
+      // Set cookie for middleware.ts
+      document.cookie = `sb-access-token=${token}; path=/; max-age=604800; SameSite=Lax`;
+
       // Set user object with ID
       setState((s) => ({
         user: { id, email, name: fallbackName, token },
@@ -126,6 +129,7 @@ if (typeof window !== "undefined") {
         }));
       }
     } else {
+      document.cookie = "sb-access-token=; path=/; max-age=0;";
       setState({ user: null });
     }
   });

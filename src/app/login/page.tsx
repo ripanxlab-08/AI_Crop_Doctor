@@ -189,15 +189,16 @@ export default function LoginScreen() {
   useEffect(() => {
     if (!isSuccess) return;
     const redirectTimer = setTimeout(() => {
-      router.push("/home");
-    }, 1500);
+      window.location.href = "/home";
+    }, 1000);
     return () => clearTimeout(redirectTimer);
-  }, [isSuccess, router]);
+  }, [isSuccess]);
 
-  // If user is already logged in, redirect to home immediately
+  // If user is already logged in, set cookie and redirect to home
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
+        document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=604800; SameSite=Lax`;
         router.replace("/home");
       }
     });
