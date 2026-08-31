@@ -1,0 +1,51 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# large datasets & database files
+Crop_Scan-dataset/
+*.db
+*.sqlite
+*.sqlite3
+
+# testing & logs
+/coverage
+*.log
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+backend/.env
+test-gemini-key.js
+test-supabase-inserts.js
+test-connection.js
+test-insert.js
+
+# python & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+ml/venv/
+venv/
+.venv/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

@@ -1,0 +1,516 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * AI Crop Doctor — FUTURISTIC BIOPUNK design system.
+ * Dark neon bio-tech aesthetic with deep space backgrounds,
+ * cyan/emerald neon accents, glassmorphism, 3D card effects.
+ * All colors are oklch semantic tokens.
+ */
+
+@theme inline {
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 12px);
+  --radius-3xl: calc(var(--radius) + 20px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-glow: var(--accent-glow);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-soil: var(--soil);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-green: var(--neon-green);
+  --color-neon-amber: var(--neon-amber);
+  --color-glass: var(--glass);
+  --color-glass-border: var(--glass-border);
+
+  --color-stage-1: var(--stage-1);
+  --color-stage-2: var(--stage-2);
+  --color-stage-3: var(--stage-3);
+  --color-stage-4: var(--stage-4);
+  --color-stage-5: var(--stage-5);
+
+  /* Premium 3D & glow shadows */
+  --shadow-soft:
+    0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px -12px oklch(0 0 0 / 0.5),
+    0 0 0 1px oklch(1 0 0 / 0.04);
+  --shadow-lift:
+    0 2px 4px oklch(0 0 0 / 0.4), 0 18px 40px -18px oklch(0 0 0 / 0.6),
+    0 0 0 1px oklch(1 0 0 / 0.06);
+  --shadow-glow-primary:
+    0 0 20px oklch(0.72 0.2 152 / 0.35), 0 0 60px oklch(0.72 0.2 152 / 0.15),
+    0 4px 0 oklch(0.35 0.12 152 / 0.8);
+  --shadow-glow-accent:
+    0 0 20px oklch(0.78 0.18 180 / 0.4), 0 0 60px oklch(0.78 0.18 180 / 0.2);
+  --shadow-card-3d:
+    0 4px 0 oklch(0.15 0.02 152), 0 8px 32px oklch(0 0 0 / 0.5),
+    0 0 0 1px oklch(1 0 0 / 0.08);
+  --shadow-press: inset 0 -1px 0 oklch(1 0 0 / 0.08), inset 0 2px 4px oklch(0 0 0 / 0.3);
+}
+
+:root {
+  --radius: 1.25rem;
+
+  /* ── Futuristic dark theme (default) ── */
+  --background: oklch(0.09 0.018 250);
+  --foreground: oklch(0.95 0.015 180);
+  --card: oklch(0.13 0.022 240);
+  --card-foreground: oklch(0.94 0.015 180);
+  --popover: oklch(0.13 0.022 240);
+  --popover-foreground: oklch(0.94 0.015 180);
+
+  /* Neon emerald primary */
+  --primary: oklch(0.72 0.2 152);
+  --primary-foreground: oklch(0.08 0.02 152);
+  --primary-soft: oklch(0.17 0.04 152);
+  --primary-glow: oklch(0.72 0.2 152 / 0.3);
+
+  /* Cyan secondary */
+  --secondary: oklch(0.16 0.03 220);
+  --secondary-foreground: oklch(0.8 0.08 200);
+
+  --muted: oklch(0.15 0.02 240);
+  --muted-foreground: oklch(0.6 0.04 200);
+
+  /* Cyan accent */
+  --accent: oklch(0.78 0.18 180);
+  --accent-foreground: oklch(0.09 0.02 200);
+  --accent-soft: oklch(0.17 0.05 185);
+  --accent-glow: oklch(0.78 0.18 180 / 0.3);
+
+  --destructive: oklch(0.65 0.22 27);
+  --destructive-foreground: oklch(0.97 0.01 95);
+  --destructive-soft: oklch(0.18 0.05 27);
+
+  --success: oklch(0.72 0.2 152);
+  --success-foreground: oklch(0.08 0.02 152);
+  --success-soft: oklch(0.17 0.05 152);
+
+  --warning: oklch(0.78 0.18 75);
+  --warning-foreground: oklch(0.97 0.01 95);
+  --warning-soft: oklch(0.18 0.05 72);
+
+  --info: oklch(0.68 0.15 230);
+  --info-soft: oklch(0.17 0.04 230);
+
+  --soil: oklch(0.5 0.1 55);
+
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.72 0.2 152);
+
+  /* Neon specials */
+  --neon-cyan: oklch(0.78 0.18 180);
+  --neon-green: oklch(0.72 0.2 152);
+  --neon-amber: oklch(0.78 0.18 75);
+
+  /* Glassmorphism */
+  --glass: oklch(1 0 0 / 5%);
+  --glass-border: oklch(1 0 0 / 10%);
+
+  --stage-1: oklch(0.72 0.18 100);
+  --stage-2: oklch(0.72 0.2 152);
+  --stage-3: oklch(0.7 0.16 90);
+  --stage-4: oklch(0.72 0.18 45);
+  --stage-5: oklch(0.65 0.2 30);
+}
+
+/* Light mode fallback — still futuristic but brighter */
+.light {
+  --background: oklch(0.97 0.01 220);
+  --foreground: oklch(0.15 0.04 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.04 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.04 240);
+  --primary: oklch(0.47 0.15 152);
+  --primary-foreground: oklch(0.97 0.01 95);
+  --primary-soft: oklch(0.92 0.04 152);
+  --primary-glow: oklch(0.47 0.15 152 / 0.2);
+  --secondary: oklch(0.93 0.02 220);
+  --secondary-foreground: oklch(0.3 0.08 200);
+  --muted: oklch(0.95 0.012 200);
+  --muted-foreground: oklch(0.55 0.03 200);
+  --accent: oklch(0.52 0.14 185);
+  --accent-foreground: oklch(0.97 0.01 95);
+  --accent-soft: oklch(0.93 0.04 185);
+  --accent-glow: oklch(0.52 0.14 185 / 0.2);
+  --destructive: oklch(0.55 0.2 27);
+  --destructive-foreground: oklch(0.97 0.01 95);
+  --destructive-soft: oklch(0.95 0.03 27);
+  --success: oklch(0.5 0.15 152);
+  --success-foreground: oklch(0.97 0.01 95);
+  --success-soft: oklch(0.92 0.04 152);
+  --warning: oklch(0.65 0.16 62);
+  --warning-foreground: oklch(0.15 0.04 60);
+  --warning-soft: oklch(0.95 0.04 72);
+  --info: oklch(0.5 0.1 230);
+  --info-soft: oklch(0.93 0.03 230);
+  --soil: oklch(0.42 0.06 55);
+  --border: oklch(0.88 0.015 220);
+  --input: oklch(0.88 0.015 220);
+  --ring: oklch(0.47 0.15 152);
+  --glass: oklch(1 0 0 / 60%);
+  --glass-border: oklch(0 0 0 / 8%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Subtle grid texture for depth */
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.72 0.2 152 / 0.08) 0%, transparent 65%),
+      linear-gradient(oklch(1 0 0 / 2%) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(1 0 0 / 2%) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ── Glassmorphism Surface System ── */
+@utility surface {
+  background: oklch(1 0 0 / 5%);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid oklch(1 0 0 / 8%);
+}
+
+@utility surface-lift {
+  background: oklch(1 0 0 / 6%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lift);
+  border: 1px solid oklch(1 0 0 / 10%);
+}
+
+/* ── 3D Hero Banner ── */
+@utility field-hero {
+  background:
+    radial-gradient(120% 100% at 20% 0%, oklch(0.72 0.2 152 / 0.25) 0%, transparent 55%),
+    radial-gradient(80% 80% at 90% 100%, oklch(0.78 0.18 180 / 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, oklch(0.15 0.04 200) 0%, oklch(0.12 0.03 240) 100%);
+  border: 1px solid oklch(0.72 0.2 152 / 0.3);
+  box-shadow:
+    0 0 40px oklch(0.72 0.2 152 / 0.15),
+    inset 0 1px 0 oklch(1 0 0 / 0.1);
+  color: oklch(0.95 0.015 180);
+}
+
+/* ── Neon Glow Button ── */
+@utility btn-neon {
+  background: linear-gradient(135deg, oklch(0.72 0.2 152) 0%, oklch(0.65 0.18 165) 100%);
+  color: oklch(0.08 0.02 152);
+  font-weight: 700;
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 0 20px oklch(0.72 0.2 152 / 0.5),
+    0 4px 0 oklch(0.35 0.12 152),
+    inset 0 1px 0 oklch(1 0 0 / 0.25);
+  transition: all 0.15s ease;
+}
+
+@utility btn-neon-hover {
+  box-shadow:
+    0 0 30px oklch(0.72 0.2 152 / 0.7),
+    0 6px 0 oklch(0.35 0.12 152),
+    inset 0 1px 0 oklch(1 0 0 / 0.25);
+  transform: translateY(-1px);
+}
+
+/* ── Holographic shimmer utility ── */
+@utility holographic {
+  background: linear-gradient(
+    135deg,
+    oklch(0.72 0.2 152 / 0.15) 0%,
+    oklch(0.78 0.18 180 / 0.15) 33%,
+    oklch(0.78 0.18 75 / 0.15) 66%,
+    oklch(0.72 0.2 152 / 0.15) 100%
+  );
+  background-size: 300% 300%;
+  animation: holo-shift 6s linear infinite;
+}
+
+@utility text-balance-tight {
+  text-wrap: balance;
+}
+
+/* ── Neon text glow ── */
+@utility text-neon-green {
+  color: oklch(0.72 0.2 152);
+  text-shadow:
+    0 0 10px oklch(0.72 0.2 152 / 0.6),
+    0 0 30px oklch(0.72 0.2 152 / 0.3);
+}
+
+@utility text-neon-cyan {
+  color: oklch(0.78 0.18 180);
+  text-shadow:
+    0 0 10px oklch(0.78 0.18 180 / 0.6),
+    0 0 30px oklch(0.78 0.18 180 / 0.3);
+}
+
+/* ─────────── Keyframe Animations ─────────── */
+
+@keyframes leaf-sway {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0) scale(1);
+    filter: drop-shadow(0 0 8px oklch(0.72 0.2 152 / 0.4));
+  }
+  50% {
+    transform: rotate(3deg) translateY(-6px) scale(1.02);
+    filter: drop-shadow(0 0 16px oklch(0.72 0.2 152 / 0.7));
+  }
+}
+
+@keyframes scan-sweep {
+  0% {
+    top: 4%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    top: 96%;
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes neon-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px oklch(0.72 0.2 152 / 0.4),
+      0 0 24px oklch(0.72 0.2 152 / 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 20px oklch(0.72 0.2 152 / 0.7),
+      0 0 60px oklch(0.72 0.2 152 / 0.35);
+  }
+}
+
+@keyframes holo-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes grid-flow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 40px;
+  }
+}
+
+@keyframes float-particle {
+  0% {
+    transform: translateY(0px) translateX(0px) scale(1);
+    opacity: 0.6;
+  }
+  33% {
+    transform: translateY(-20px) translateX(10px) scale(1.1);
+    opacity: 1;
+  }
+  66% {
+    transform: translateY(-10px) translateX(-8px) scale(0.9);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes border-spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@keyframes shake-anim {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes data-stream {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0.6;
+  }
+}
+
+/* ─────────── Utility Classes ─────────── */
+
+@utility animate-leaf {
+  animation: leaf-sway 5s ease-in-out infinite;
+}
+
+@utility animate-scan {
+  animation: scan-sweep 2.1s ease-in-out infinite;
+}
+
+@utility animate-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@utility animate-rise {
+  animation: rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-neon-pulse {
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+
+@utility animate-holo {
+  animation: holo-shift 6s linear infinite;
+}
+
+@utility animate-shake {
+  animation: shake-anim 0.3s ease-in-out;
+}
+
+@utility animate-float {
+  animation: float-particle 6s ease-in-out infinite;
+}
+
+/* ── Neon border ring for active elements ── */
+@utility neon-ring {
+  box-shadow:
+    0 0 0 2px oklch(0.72 0.2 152 / 0.8),
+    0 0 16px oklch(0.72 0.2 152 / 0.4);
+}
+
+/* ── Cyber grid background ── */
+@utility cyber-grid {
+  background-image:
+    linear-gradient(oklch(0.72 0.2 152 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.72 0.2 152 / 3%) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Scanline overlay ── */
+@utility scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    oklch(0 0 0 / 3%) 2px,
+    oklch(0 0 0 / 3%) 4px
+  );
+}
