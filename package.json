@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "preinstall": "node -e \"if(!process.env.npm_config_user_agent || !process.env.npm_config_user_agent.includes('bun')){ console.error('\\n\\x1b[31m❌ ERROR: Please use Bun to install packages! npm is blocked.\\x1b[0m\\nPlease run: \\x1b[32mbun i\\x1b[0m\\n'); process.exit(1); }\"",
+    "predev": "node -e \"if(!process.env.npm_config_user_agent || !process.env.npm_config_user_agent.includes('bun')){ console.error('\\n\\x1b[31m❌ ERROR: Please use Bun to run this project! npm is blocked.\\x1b[0m\\nPlease run: \\x1b[32mbun run dev\\x1b[0m\\n'); process.exit(1); }\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
