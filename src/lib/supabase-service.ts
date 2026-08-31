@@ -22,12 +22,22 @@ export interface SupabaseDiagnosisRecord {
 /**
  * Fetch profile for current authenticated user from public.profiles
  */
-export async function fetchProfile(userId: string): Promise<SupabaseProfile | null> {
+export async function fetchProfile(userId?: string): Promise<SupabaseProfile | null> {
   try {
+    let targetUserId = userId;
+    if (!targetUserId) {
+      const { data: authData } = await supabase.auth.getUser();
+      if (authData?.user) {
+        targetUserId = authData.user.id;
+      }
+    }
+
+    if (!targetUserId) return null;
+
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
-      .eq("id", userId)
+      .eq("id", targetUserId)
       .single();
 
     if (error) {
@@ -67,13 +77,21 @@ export async function upsertProfile(profile: Partial<SupabaseProfile> & { id: st
  */
 export async function fetchDiagnosisHistory(userId?: string): Promise<SupabaseDiagnosisRecord[]> {
   try {
+    let targetUserId = userId;
+    if (!targetUserId) {
+      const { data: authData } = await supabase.auth.getUser();
+      if (authData?.user) {
+        targetUserId = authData.user.id;
+      }
+    }
+
     let query = supabase
       .from("diagnosis_history")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (userId) {
-      query = query.eq("user_id", userId);
+    if (targetUserId) {
+      query = query.eq("user_id", targetUserId);
     }
 
     const { data, error } = await query;
@@ -94,15 +112,33 @@ export async function fetchDiagnosisHistory(userId?: string): Promise<SupabaseDi
  */
 export async function insertDiagnosisHistory(entry: SupabaseDiagnosisRecord) {
   try {
+    let targetUserId = entry.user_id;
+    if (!targetUserId) {
+      const { data: authData } = await supabase.auth.getUser();
+      if (authData?.user) {
+        targetUserId = authData.user.id;
+      }
+    }
+
+    const payload = {
+      crop_name: entry.crop_name,
+      disease_name: entry.disease_name,
+      confidence: entry.confidence,
+      severity_stage: entry.severity_stage || "G1",
+      image_url: entry.image_url || null,
+      ...(targetUserId ? { user_id: targetUserId } : {}),
+    };
+
     const { data, error } = await supabase
       .from("diagnosis_history")
-      .insert(entry)
+      .insert(payload)
       .select();
 
     if (error) {
       console.error("Error inserting into diagnosis_history:", error.message);
       return null;
     }
+    console.log("✓ Successfully inserted diagnosis_history record to Supabase:", data);
     return data;
   } catch (err) {
     console.error("Failed to insert diagnosis history:", err);
