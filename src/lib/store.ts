@@ -9,7 +9,7 @@ import type { LanguageCode } from "@/lib/i18n";
 import { addDays, startOfDay } from "@/lib/crop-schedule";
 import type { Reminder } from "@/lib/crop-schedule";
 import { supabase } from "./supabase";
-import { fetchProfile } from "./supabase-service";
+import { fetchProfile, upsertProfile } from "./supabase-service";
 
 export interface HistoryEntry {
   id: string;
@@ -104,6 +104,15 @@ if (typeof window !== "undefined") {
           name: s.profile.name || fallbackName,
         },
       }));
+
+      // Automatically upsert profile row to Supabase public.profiles table
+      await upsertProfile({
+        id: id,
+        full_name: fallbackName,
+        location: "Nadia, West Bengal",
+      }).catch((err) => {
+        console.warn("Notice: automatic profile upsert error:", err);
+      });
 
       // Fetch cloud profile from Supabase
       const cloudProf = await fetchProfile(id).catch(() => null);
