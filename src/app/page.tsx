@@ -1,49 +1,25 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppState } from "@/lib/store";
 import IntroSplash from "@/components/intro-splash";
 
-const SEEN_KEY = "acd.intro.seen";
-
 export default function RootRedirect() {
   const router = useRouter();
   const { user } = useAppState();
-  const [showIntro, setShowIntro] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    
-    // If not logged in, redirect directly to /login without showing intro
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
-    const alreadySeen = sessionStorage.getItem(SEEN_KEY) === "1";
-    setShowIntro(!alreadySeen);
-  }, [user, router]);
+  const [splashFinished, setSplashFinished] = useState(false);
 
   const handleIntroComplete = useCallback(() => {
-    sessionStorage.setItem(SEEN_KEY, "1");
-    setShowIntro(false);
-  }, []);
-
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-    if (showIntro === false) {
+    setSplashFinished(true);
+    if (user) {
       router.push("/home");
+    } else {
+      router.push("/login");
     }
-  }, [showIntro, user, router]);
+  }, [user, router]);
 
-  if (!user) return null;
-  if (showIntro === null) return null;
-
-  if (showIntro) {
+  if (!splashFinished) {
     return <IntroSplash onComplete={handleIntroComplete} />;
   }
 
