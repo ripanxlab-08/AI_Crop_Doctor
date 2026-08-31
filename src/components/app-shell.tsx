@@ -194,7 +194,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div
       className="mx-auto flex min-h-screen w-full max-w-screen-sm flex-col pb-24 relative"
-      style={{ background: "var(--color-background)" }}
+      style={{ background: "var(--background, oklch(0.09 0.018 250))" }}
     >
       {/* Ambient background glow */}
       <div

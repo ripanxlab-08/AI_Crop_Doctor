@@ -118,24 +118,25 @@
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--border);
     box-sizing: border-box;
   }
 
   html {
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
+    background-color: oklch(0.09 0.018 250);
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--background, oklch(0.09 0.018 250));
+    color: var(--foreground, oklch(0.95 0.015 180));
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Subtle grid texture for depth */
     background-image:
-      radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.72 0.2 152 / 0.08) 0%, transparent 65%),
+      radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.72 0.2 152 / 0.15) 0%, transparent 65%),
       linear-gradient(oklch(1 0 0 / 2%) 1px, transparent 1px),
       linear-gradient(90deg, oklch(1 0 0 / 2%) 1px, transparent 1px);
     background-size: 100% 100%, 40px 40px, 40px 40px;
