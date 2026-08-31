@@ -9,6 +9,7 @@ import type { LanguageCode } from "@/lib/i18n";
 import { addDays, startOfDay } from "@/lib/crop-schedule";
 import type { Reminder } from "@/lib/crop-schedule";
 import { supabase } from "./supabase";
+import { fetchProfile } from "./supabase-service";
 
 export interface HistoryEntry {
   id: string;
@@ -41,7 +42,7 @@ export interface AppState {
   customReminders: Reminder[];
   disabledReminderIds: string[];
   lastResult: (DiagnosisResponse & { image: string; at: string }) | null;
-  user: { id?: string; email: string; name: string; token: string } | null;
+  user: { id: string; email: string; name: string; token: string } | null;
 }
 
 const KEY = "acd.state.v1";
@@ -64,9 +65,9 @@ function seedState(): AppState {
     sowingDate: addDays(today, -39).toISOString(),
     profile: {
       name: "",
-      region: "",
+      region: "Nadia, West Bengal",
       language: "en",
-      crops: [],
+      crops: ["tomato"],
       notifications: true,
       voiceGuidance: true,
       units: "metric",
@@ -84,22 +85,37 @@ const listeners = new Set<() => void>();
 
 // Subscribe to Supabase auth changes
 if (typeof window !== "undefined") {
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange(async (_event, session) => {
     hydrate(); // Ensure state is loaded from localStorage first
     if (session?.user) {
+      const id = session.user.id;
       const email = session.user.email || "";
-      const name =
+      const fallbackName =
         (session.user.user_metadata?.["name"] as string | undefined) ||
         (email.split("@")[0] as string) ||
         "Farmer";
       const token = session.access_token;
+
+      // Set user object with ID
       setState((s) => ({
-        user: { email, name, token },
+        user: { id, email, name: fallbackName, token },
         profile: {
           ...s.profile,
-          name: s.profile.name === "Ripan Samui" && name !== "farmer" ? name : s.profile.name,
+          name: s.profile.name || fallbackName,
         },
       }));
+
+      // Fetch cloud profile from Supabase
+      const cloudProf = await fetchProfile(id).catch(() => null);
+      if (cloudProf) {
+        setState((s) => ({
+          profile: {
+            ...s.profile,
+            name: cloudProf.full_name || s.profile.name || fallbackName,
+            region: cloudProf.location || s.profile.region || "Nadia, West Bengal",
+          },
+        }));
+      }
     } else {
       setState({ user: null });
     }
@@ -113,8 +129,6 @@ function hydrate() {
     const raw = window.localStorage.getItem(KEY);
     if (raw) {
       const saved = JSON.parse(raw) as Partial<AppState>;
-      // SECURITY: Never restore `user` from localStorage.
-      // Auth state is ONLY set by Supabase's onAuthStateChange.
       delete saved.user;
       state = { ...state, ...saved };
     }
@@ -126,7 +140,6 @@ function hydrate() {
 function persist() {
   if (typeof window === "undefined") return;
   try {
-    // Only persist safe, non-auth keys
     const toSave = PERSIST_KEYS.reduce(
       (acc, key) => ({ ...acc, [key]: state[key] }),
       {} as Partial<AppState>,
@@ -144,35 +157,33 @@ export function setState(patch: Partial<AppState> | ((s: AppState) => Partial<Ap
   listeners.forEach((l) => l());
 }
 
-function subscribe(listener: () => void) {
-  hydrate();
-  listeners.add(listener);
-  listener();
-  return () => listeners.delete(listener);
-}
-
 export function useAppState(): AppState {
   return useSyncExternalStore(
-    subscribe,
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
     () => state,
-    () => state,
+    () => seedState(),
   );
 }
 
 export function addHistoryEntry(entry: HistoryEntry) {
-  setState((s) => ({ history: [entry, ...s.history] }));
-}
-
-export function toggleReminder(id: string) {
   setState((s) => ({
-    disabledReminderIds: s.disabledReminderIds.includes(id)
-      ? s.disabledReminderIds.filter((x) => x !== id)
-      : [...s.disabledReminderIds, id],
+    history: [entry, ...s.history.filter((h) => h.id !== entry.id)],
   }));
 }
 
 export function addCustomReminder(reminder: Reminder) {
-  setState((s) => ({ customReminders: [...s.customReminders, reminder] }));
+  setState((s) => ({
+    customReminders: [reminder, ...s.customReminders.filter((r) => r.id !== reminder.id)],
+  }));
+}
+
+export function deleteCustomReminder(id: string) {
+  setState((s) => ({
+    customReminders: s.customReminders.filter((r) => r.id !== id),
+  }));
 }
 
 export function updateCustomReminder(id: string, patch: Partial<Reminder>) {
@@ -181,27 +192,36 @@ export function updateCustomReminder(id: string, patch: Partial<Reminder>) {
   }));
 }
 
-export function deleteCustomReminder(id: string) {
-  setState((s) => ({ customReminders: s.customReminders.filter((r) => r.id !== id) }));
+export function toggleReminderDisabled(id: string) {
+  setState((s) => {
+    const isDis = s.disabledReminderIds.includes(id);
+    return {
+      disabledReminderIds: isDis
+        ? s.disabledReminderIds.filter((x) => x !== id)
+        : [...s.disabledReminderIds, id],
+    };
+  });
+}
+
+export function toggleReminder(id: string) {
+  toggleReminderDisabled(id);
 }
 
 export function updateProfile(patch: Partial<FarmerProfile>) {
-  setState((s) => ({ profile: { ...s.profile, ...patch } }));
-}
-
-export function loginUser(email: string, name: string) {
   setState((s) => ({
-    user: { email, name, token: s.user?.token || "" },
-    profile: {
-      ...s.profile,
-      name: name || s.profile.name || email.split("@")[0] || "Farmer",
-    },
+    profile: { ...s.profile, ...patch },
   }));
 }
 
-export function logoutUser() {
-  supabase.auth.signOut({ scope: "local" }).catch((err) => {
-    console.error("Error signing out from Supabase:", err);
-  });
-  setState({ user: null });
+export async function logoutUser() {
+  try {
+    await supabase.auth.signOut();
+  } catch (e) {
+    console.warn("Supabase signOut error:", e);
+  }
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(KEY);
+  }
+  state = seedState();
+  listeners.forEach((l) => l());
 }
