@@ -383,47 +383,47 @@
 
 /* ─────────── Utility Classes ─────────── */
 
-@utility animate-leaf {
+.animate-leaf {
   animation: leaf-sway 5s ease-in-out infinite;
 }
 
-@utility animate-scan {
+.animate-scan {
   animation: scan-sweep 2.1s ease-in-out infinite;
 }
 
-@utility animate-ring {
+.animate-ring {
   animation: pulse-ring 2s ease-out infinite;
 }
 
-@utility animate-rise {
+.animate-rise {
   animation: rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@utility animate-neon-pulse {
+.animate-neon-pulse {
   animation: neon-pulse 3s ease-in-out infinite;
 }
 
-@utility animate-holo {
+.animate-holo {
   animation: holo-shift 6s linear infinite;
 }
 
-@utility animate-shake {
+.animate-shake {
   animation: shake-anim 0.3s ease-in-out;
 }
 
-@utility animate-float {
+.animate-float {
   animation: float-particle 6s ease-in-out infinite;
 }
 
 /* ── Neon border ring for active elements ── */
-@utility neon-ring {
+.neon-ring {
   box-shadow:
     0 0 0 2px oklch(0.72 0.2 152 / 0.8),
     0 0 16px oklch(0.72 0.2 152 / 0.4);
 }
 
 /* ── Cyber grid background ── */
-@utility cyber-grid {
+.cyber-grid {
   background-image:
     linear-gradient(oklch(0.72 0.2 152 / 3%) 1px, transparent 1px),
     linear-gradient(90deg, oklch(0.72 0.2 152 / 3%) 1px, transparent 1px);
@@ -431,7 +431,7 @@
 }
 
 /* ── Scanline overlay ── */
-@utility scanlines {
+.scanlines {
   background-image: repeating-linear-gradient(
     0deg,
     transparent,
