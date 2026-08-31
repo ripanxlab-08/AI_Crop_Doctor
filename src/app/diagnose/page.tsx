@@ -17,6 +17,7 @@ import {
 import { addHistoryEntry, setState, useAppState } from "@/lib/store";
 import { insertDiagnosisHistory } from "@/lib/supabase-service";
 import { useT } from "@/lib/i18n";
+import AuthGuard from "@/components/auth-guard";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -34,52 +35,52 @@ const DEMO_SAMPLES = [
   {
     name: "Apple Cedar Rust",
     filename: "AppleCedarRust1.JPG",
-    emoji: "🍎",
+    emoji: "ðŸŽ",
     desc: "Gymnosporangium rust",
     image: "/demo/apple_cedar_rust.png",
   },
   {
     name: "Apple Scab",
     filename: "AppleScab1.JPG",
-    emoji: "🍎",
+    emoji: "ðŸŽ",
     desc: "Venturia fungal spots",
     image: "/demo/apple_scab.png",
   },
   {
     name: "Corn Common Rust",
     filename: "CornCommonRust1.JPG",
-    emoji: "🌽",
+    emoji: "ðŸŒ½",
     desc: "Puccinia powdery spots",
     image: "/demo/corn_common_rust.png",
   },
   {
     name: "Potato Early Blight",
     filename: "PotatoEarlyBlight1.JPG",
-    emoji: "🥔",
+    emoji: "ðŸ¥”",
     desc: "Alternaria concentric rings",
     image: "/demo/potato_early_blight.png",
   },
   {
     name: "Tomato Yellow Curl",
     filename: "TomatoYellowCurlVirus1.JPG",
-    emoji: "🍅",
+    emoji: "ðŸ…",
     desc: "Whitefly TYLC virus",
     image: "/demo/tomato_yellow_curl.png",
   },
   {
     name: "Tomato Healthy",
     filename: "TomatoHealthy1.JPG",
-    emoji: "🍅",
+    emoji: "ðŸ…",
     desc: "Clean green foliage",
     image: "/demo/tomato_healthy.png",
   },
 ];
 
-/* ─────────────────────────── WebcamModal ────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ WebcamModal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 /**
  * Full-screen webcam capture modal.
- * Uses browser getUserMedia — works on PC / laptop webcams without any plugin.
+ * Uses browser getUserMedia â€” works on PC / laptop webcams without any plugin.
  * On capture it converts the live video frame to a File via canvas.
  */
 function WebcamModal({
@@ -205,7 +206,7 @@ function WebcamModal({
           <X className="size-5" />
         </button>
         <p className="text-sm font-semibold text-white">
-          {ready ? "🟢 Camera live" : camError ? "🔴 Error" : "⏳ Starting..."}
+          {ready ? "ðŸŸ¢ Camera live" : camError ? "ðŸ”´ Error" : "â³ Starting..."}
         </p>
         <button
           type="button"
@@ -323,7 +324,7 @@ function WebcamModal({
   );
 }
 
-/* ────────────────────────── Main screen ────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Main screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function DiagnoseScreenContent() {
   const t = useT();
@@ -459,8 +460,9 @@ function DiagnoseScreenContent() {
   };
 
   return (
+    <AuthGuard>
     <>
-      {/* ── Webcam modal (rendered outside AppShell so it covers full viewport) ── */}
+      {/* â”€â”€ Webcam modal (rendered outside AppShell so it covers full viewport) â”€â”€ */}
       {webcamOpen && (
         <WebcamModal onCapture={handleWebcamCapture} onClose={() => setWebcamOpen(false)} />
       )}
@@ -481,13 +483,13 @@ function DiagnoseScreenContent() {
                 </span>
                 <h2 className="mt-4 font-display text-lg font-bold">Take one clear leaf photo</h2>
                 <ul className="mt-3 space-y-1.5 text-left text-xs text-muted-foreground">
-                  <li>• Point your webcam at a leaf in good light.</li>
-                  <li>• Fill the guide frame with a single leaf.</li>
-                  <li>• Hold steady, then press the shutter button.</li>
+                  <li>â€¢ Point your webcam at a leaf in good light.</li>
+                  <li>â€¢ Fill the guide frame with a single leaf.</li>
+                  <li>â€¢ Hold steady, then press the shutter button.</li>
                 </ul>
               </div>
 
-              {/* ── Camera button — opens live webcam ── */}
+              {/* â”€â”€ Camera button â€” opens live webcam â”€â”€ */}
               <button
                 type="button"
                 id="open-webcam-btn"
@@ -594,7 +596,7 @@ function DiagnoseScreenContent() {
                   }
                   className="mt-2 min-h-12 w-full rounded-xl border border-input bg-background px-3 text-sm"
                 >
-                  <option value="">None — image is good</option>
+                  <option value="">None â€” image is good</option>
                   <option value="blurry">Blurry image</option>
                   <option value="dark">Dark leaf</option>
                   <option value="too_far">Too far from leaf</option>
@@ -705,6 +707,7 @@ function DiagnoseScreenContent() {
         </div>
       </AppShell>
     </>
+    </AuthGuard>
   );
 }
 
@@ -721,3 +724,4 @@ export default function DiagnoseScreen() {
     </Suspense>
   );
 }
+

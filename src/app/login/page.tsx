@@ -194,6 +194,15 @@ export default function LoginScreen() {
     return () => clearTimeout(redirectTimer);
   }, [isSuccess, router]);
 
+  // If user is already logged in, redirect to home immediately
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        router.replace("/home");
+      }
+    });
+  }, [router]);
+
   // Social log in helper
   const handleSocialLogin = async (platform: "Google" | "Apple") => {
     setIsLoading(true);

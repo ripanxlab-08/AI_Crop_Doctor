@@ -7,6 +7,7 @@ import { NotificationCard } from "@/components/crop-ui";
 import { CROPS } from "@/data/crops";
 import { LANGUAGES, useT } from "@/lib/i18n";
 import { updateProfile, useAppState, logoutUser } from "@/lib/store";
+import AuthGuard from "@/components/auth-guard";
 import { cn } from "@/lib/utils";
 
 function Toggle({
@@ -53,6 +54,7 @@ export default function ProfileScreen() {
   const { profile, user } = useAppState();
 
   return (
+    <AuthGuard>
     <AppShell>
       <AppHeader title={t("profile.title")} backTo="/home" />
       <div className="space-y-5 px-5 py-5">
@@ -274,5 +276,7 @@ export default function ProfileScreen() {
         </p>
       </div>
     </AppShell>
+    </AuthGuard>
   );
 }
+

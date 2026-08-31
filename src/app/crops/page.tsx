@@ -6,16 +6,18 @@ import { AppShell, AppHeader } from "@/components/app-shell";
 import { CROPS, DISEASES, MONTH_NAMES } from "@/data/crops";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import AuthGuard from "@/components/auth-guard";
 
 export default function CropsScreen() {
   const t = useT();
   const [open, setOpen] = useState<string | null>("tomato");
 
   return (
+    <AuthGuard>
     <AppShell>
       <AppHeader
         title={t("crops.title")}
-        subtitle="New crops are added as data — no redesign needed"
+        subtitle="New crops are added as data â€” no redesign needed"
         backTo="/home"
       />
       <div className="space-y-3 px-5 py-5">
@@ -39,7 +41,7 @@ export default function CropsScreen() {
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold">{crop.name}</span>
                   <span className="block text-xs text-muted-foreground">
-                    {crop.growingDurationDays} days ·{" "}
+                    {crop.growingDurationDays} days Â·{" "}
                     {crop.plantingMonths.map((m) => MONTH_NAMES[m - 1]?.slice(0, 3)).join(", ")}
                   </span>
                 </span>
@@ -70,7 +72,7 @@ export default function CropsScreen() {
                       label="Expected harvest"
                       value={
                         crop.stages.length
-                          ? `Day ${crop.stages[crop.stages.length - 1]!.startDay}–${crop.growingDurationDays}`
+                          ? `Day ${crop.stages[crop.stages.length - 1]!.startDay}â€“${crop.growingDurationDays}`
                           : "Pending data"
                       }
                     />
@@ -93,7 +95,7 @@ export default function CropsScreen() {
                           <li key={s.key} className="flex justify-between gap-3">
                             <span className="font-medium">{s.label}</span>
                             <span className="text-muted-foreground">
-                              Day {s.startDay}–{s.endDay}
+                              Day {s.startDay}â€“{s.endDay}
                             </span>
                           </li>
                         ))}
@@ -144,6 +146,7 @@ export default function CropsScreen() {
         })}
       </div>
     </AppShell>
+    </AuthGuard>
   );
 }
 
@@ -157,3 +160,4 @@ function Fact({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+

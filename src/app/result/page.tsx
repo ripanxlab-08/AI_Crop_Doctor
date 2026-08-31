@@ -18,9 +18,10 @@ import { getDiseaseByName } from "@/data/crops";
 import type { StageTreatment } from "@/data/crops";
 import { useAppState } from "@/lib/store";
 import { useT } from "@/lib/i18n";
+import AuthGuard from "@/components/auth-guard";
 import { cn } from "@/lib/utils";
 
-/* ─────────────────────────────── helpers ───────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function InfoBlock({
   icon: Icon,
@@ -57,9 +58,9 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
-/* ──────────────────────────── stage panel ───────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ stage panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-/** Colour tokens per stage — all HSL so they work in both light / dark modes. */
+/** Colour tokens per stage â€” all HSL so they work in both light / dark modes. */
 const STAGE_STYLES = {
   G0: {
     bg: "bg-[hsl(142_76%_36%/0.12)]",
@@ -121,7 +122,7 @@ function StagePanel({
       className={cn("rounded-2xl border p-4 space-y-4 animate-rise", styles.bg, styles.border)}
       aria-label="Disease stage and treatment"
     >
-      {/* ── Stage header ── */}
+      {/* â”€â”€ Stage header â”€â”€ */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="text-2xl" aria-hidden>
@@ -132,7 +133,7 @@ function StagePanel({
               Disease Stage
             </p>
             <h3 className={cn("text-xl font-bold font-display leading-tight", styles.text)}>
-              {stage} — {STAGE_LABELS[stage]}
+              {stage} â€” {STAGE_LABELS[stage]}
             </h3>
           </div>
         </div>
@@ -146,7 +147,7 @@ function StagePanel({
         </span>
       </div>
 
-      {/* ── Lesion percentage bar (hidden for G0) ── */}
+      {/* â”€â”€ Lesion percentage bar (hidden for G0) â”€â”€ */}
       {stage !== "G0" && (
         <div>
           <div className="flex justify-between text-xs mb-1.5">
@@ -187,10 +188,10 @@ function StagePanel({
         </div>
       )}
 
-      {/* ── Stage-specific recommendations ── */}
+      {/* â”€â”€ Stage-specific recommendations â”€â”€ */}
       <div>
         <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2.5">
-          {stage === "G0" ? "✅ Status" : `🌿 Stage ${stage} Treatment`}
+          {stage === "G0" ? "âœ… Status" : `ðŸŒ¿ Stage ${stage} Treatment`}
         </p>
         <ul className="space-y-2.5">
           {stageTreatment.recommendations.map((rec, i) => (
@@ -210,7 +211,7 @@ function StagePanel({
         </ul>
       </div>
 
-      {/* ── Urgent alert for G3 ── */}
+      {/* â”€â”€ Urgent alert for G3 â”€â”€ */}
       {stage === "G3" && (
         <div className="flex gap-2 rounded-xl bg-destructive/10 border border-destructive/25 p-3">
           <AlertTriangle className="size-4 text-destructive shrink-0 mt-0.5" aria-hidden />
@@ -224,7 +225,7 @@ function StagePanel({
   );
 }
 
-/* ────────────────────────── main screen ─────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ main screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function ResultScreen() {
   const t = useT();
@@ -242,21 +243,23 @@ export default function ResultScreen() {
 
   if (!lastResult) {
     return (
-      <AppShell>
-        <AppHeader title={t("result.title")} backTo="/home" />
-        <div className="px-5 py-8">
-          <ErrorState
-            title="No diagnosis yet"
-            message="Run a leaf diagnosis first and your result will appear here."
-          />
-          <Link
-            href="/diagnose?mode=camera"
-            className="mt-4 flex min-h-14 items-center justify-center rounded-2xl bg-primary font-semibold text-primary-foreground"
-          >
-            Start a diagnosis
-          </Link>
-        </div>
-      </AppShell>
+      <AuthGuard>
+        <AppShell>
+          <AppHeader title={t("result.title")} backTo="/home" />
+          <div className="px-5 py-8">
+            <ErrorState
+              title="No diagnosis yet"
+              message="Run a leaf diagnosis first and your result will appear here."
+            />
+            <Link
+              href="/diagnose?mode=camera"
+              className="mt-4 flex min-h-14 items-center justify-center rounded-2xl bg-primary font-semibold text-primary-foreground"
+            >
+              Start a diagnosis
+            </Link>
+          </div>
+        </AppShell>
+      </AuthGuard>
     );
   }
 
@@ -282,12 +285,12 @@ export default function ResultScreen() {
     const confidenceText = `Confidence score is ${(lastResult.confidence * 100).toFixed(0)} percent.`;
     const stageLabelSpoken =
       stage === "G0"
-        ? "Healthy — no disease found"
+        ? "Healthy â€” no disease found"
         : stage === "G1"
           ? "Early or Mild"
           : stage === "G2"
             ? "Moderate"
-            : "Severe — emergency action required";
+            : "Severe â€” emergency action required";
     const stageText = `Disease stage is ${stage}: ${stageLabelSpoken}. Estimated leaf lesion area: ${lesionPct} percent.`;
     const treatmentText = stageTreatment
       ? `Stage ${stage} treatment steps: ${stageTreatment.recommendations.join(". ")}`
@@ -306,11 +309,12 @@ export default function ResultScreen() {
   };
 
   return (
+    <AuthGuard>
     <AppShell>
       <AppHeader title={t("result.title")} subtitle={lastResult.model} backTo="/diagnose" />
 
       <div className="space-y-4 px-5 py-5">
-        {/* ── Leaf photo + disease name ── */}
+        {/* â”€â”€ Leaf photo + disease name â”€â”€ */}
         <div className="animate-rise surface-lift overflow-hidden">
           <img
             src={lastResult.image}
@@ -331,14 +335,14 @@ export default function ResultScreen() {
               <div className="mt-4 flex gap-2.5 rounded-xl bg-destructive-soft border border-destructive/25 p-3 text-destructive animate-rise">
                 <AlertTriangle className="size-4.5 shrink-0 mt-0.5" aria-hidden />
                 <p className="text-xs font-medium leading-relaxed">
-                  <strong>Low confidence — model still under training.</strong> The predicted disease may not be accurate. Treat this diagnosis as a preliminary suggestion only.
+                  <strong>Low confidence â€” model still under training.</strong> The predicted disease may not be accurate. Treat this diagnosis as a preliminary suggestion only.
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* ── Top predictions ── */}
+        {/* â”€â”€ Top predictions â”€â”€ */}
         <section className="surface p-4">
           <SectionTitle>{t("result.top")}</SectionTitle>
           <ul className="space-y-3">
@@ -361,7 +365,7 @@ export default function ResultScreen() {
           </ul>
         </section>
 
-        {/* ── Voice + Coach ── */}
+        {/* â”€â”€ Voice + Coach â”€â”€ */}
         <div className="flex gap-3">
           <VoiceButton
             label={speaking ? "Stop Listening" : t("result.listen")}
@@ -377,16 +381,16 @@ export default function ResultScreen() {
         </div>
         {speaking && (
           <p className="text-xs text-primary animate-pulse font-medium" aria-live="polite">
-            🔊 Reading out your diagnosis, severity stage, and treatment steps...
+            ðŸ”Š Reading out your diagnosis, severity stage, and treatment steps...
           </p>
         )}
 
-        {/* ── G0–G3 Stage Panel ── */}
+        {/* â”€â”€ G0â€“G3 Stage Panel â”€â”€ */}
         {stageTreatment && (
           <StagePanel stage={stage} lesionPct={lesionPct} stageTreatment={stageTreatment} />
         )}
 
-        {/* ── Disease detail cards ── */}
+        {/* â”€â”€ Disease detail cards â”€â”€ */}
         {info ? (
           <>
             <InfoBlock icon={Info} title={t("result.what")}>
@@ -416,5 +420,7 @@ export default function ResultScreen() {
         )}
       </div>
     </AppShell>
+    </AuthGuard>
   );
 }
+

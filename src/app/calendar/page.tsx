@@ -23,6 +23,7 @@ import {
 } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import AuthGuard from "@/components/auth-guard";
 
 const STAGE_DOT: Record<string, string> = {
   "stage-1": "bg-stage-1",
@@ -103,6 +104,7 @@ export default function CalendarScreen() {
   };
 
   return (
+    <AuthGuard>
     <AppShell>
       <AppHeader
         title={t("calendar.title")}
@@ -183,11 +185,11 @@ export default function CalendarScreen() {
         {plan ? (
           <section>
             <SectionTitle action={<VoiceButton label="Listen" onClick={speakTimeline} />}>
-              Tomato timeline · sown {formatDate(plan.sowingDate)}
+              Tomato timeline Â· sown {formatDate(plan.sowingDate)}
             </SectionTitle>
             <StageRangeList plan={plan} />
             <p className="mt-3 rounded-2xl bg-accent-soft px-4 py-3 text-xs text-accent-foreground">
-              Expected harvest: {formatDate(plan.harvestStart)} – {formatDate(plan.harvestEnd)} ·{" "}
+              Expected harvest: {formatDate(plan.harvestStart)} â€“ {formatDate(plan.harvestEnd)} Â·{" "}
               {plan.crop.harvestNote}
             </p>
           </section>
@@ -259,6 +261,7 @@ export default function CalendarScreen() {
         />
       ) : null}
     </AppShell>
+    </AuthGuard>
   );
 }
 
@@ -339,3 +342,4 @@ function ReminderForm({
     </div>
   );
 }
+

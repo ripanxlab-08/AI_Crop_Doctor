@@ -8,6 +8,7 @@ import { MicButton } from "@/components/crop-ui";
 import { askCropCoach } from "@/services/crop-api";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import AuthGuard from "@/components/auth-guard";
 
 interface ChatMessage {
   id: string;
@@ -42,7 +43,7 @@ function renderRich(text: string) {
     const bullet = line.trim().startsWith("- ") || line.trim().startsWith("* ");
     const cleanLine = bullet ? line.trim().slice(2) : line;
     return (
-      <span key={i} className={cn("block leading-relaxed", bullet && "pl-3 before:mr-1.5 before:content-['•']")}>
+      <span key={i} className={cn("block leading-relaxed", bullet && "pl-3 before:mr-1.5 before:content-['â€¢']")}>
         {cleanLine}
       </span>
     );
@@ -193,6 +194,7 @@ export default function AssistantScreen() {
   };
 
   return (
+    <AuthGuard>
     <AppShell>
       <AppHeader
         title={t("assistant.name")}
@@ -210,7 +212,7 @@ export default function AssistantScreen() {
             aria-live="polite"
           >
             <span className="size-2 animate-bounce rounded-full bg-primary" />
-            Crop Coach is checking the crop database…
+            Crop Coach is checking the crop databaseâ€¦
           </div>
         ) : null}
         <div ref={endRef} />
@@ -262,10 +264,11 @@ export default function AssistantScreen() {
             className="text-center text-xs text-primary animate-pulse font-medium"
             aria-live="polite"
           >
-            🎙️ Dictating your question... speak now!
+            ðŸŽ™ï¸  Dictating your question... speak now!
           </p>
         ) : null}
       </div>
     </AppShell>
+    </AuthGuard>
   );
 }

@@ -9,6 +9,7 @@ import { CropCard, ReminderCard } from "@/components/crop-ui";
 import { buildCropPlan, generateReminders } from "@/lib/crop-schedule";
 import { logoutUser, useAppState } from "@/lib/store";
 import { useT } from "@/lib/i18n";
+import AuthGuard from "@/components/auth-guard";
 
 function greetingKey() {
   const h = new Date().getHours();
@@ -100,6 +101,7 @@ export default function HomeScreen() {
     : [];
 
   return (
+    <AuthGuard>
     <AppShell>
       {/* ── Header ── */}
       <div className="relative flex items-start justify-between gap-4 px-5 pb-2 pt-8 overflow-hidden">
@@ -538,5 +540,6 @@ export default function HomeScreen() {
         </Link>
       </section>
     </AppShell>
+    </AuthGuard>
   );
 }

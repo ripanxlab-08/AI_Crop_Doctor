@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { AppShell, AppHeader } from "@/components/app-shell";
 import { cn } from "@/lib/utils";
+import AuthGuard from "@/components/auth-guard";
 import {
   LineChart,
   Line,
@@ -129,6 +130,7 @@ export default function ArchitectureScreen() {
   }, []);
 
   return (
+    <AuthGuard>
     <AppShell>
       <AppHeader
         title="System Architecture"
@@ -521,7 +523,7 @@ export default function ArchitectureScreen() {
                   Model Parameters
                 </p>
                 <p className="font-bold text-foreground">MobileViT Small</p>
-                <p className="text-[11px] text-muted-foreground">~5.6M weights · PyTorch</p>
+                <p className="text-[11px] text-muted-foreground">~5.6M weights Â· PyTorch</p>
               </div>
               <div className="surface p-3 space-y-1">
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase">
@@ -535,6 +537,7 @@ export default function ArchitectureScreen() {
         )}
       </div>
     </AppShell>
+    </AuthGuard>
   );
 }
 
@@ -578,3 +581,4 @@ function CheckItem({ text }: { text: string }) {
     </div>
   );
 }
+

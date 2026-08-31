@@ -10,6 +10,7 @@ import { useAppState, type HistoryEntry } from "@/lib/store";
 import { confidenceBand } from "@/services/crop-api";
 import { fetchDiagnosisHistory, type SupabaseDiagnosisRecord } from "@/lib/supabase-service";
 import { useT } from "@/lib/i18n";
+import AuthGuard from "@/components/auth-guard";
 import { cn } from "@/lib/utils";
 
 export default function HistoryScreen() {
@@ -69,6 +70,7 @@ export default function HistoryScreen() {
   allRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
+    <AuthGuard>
     <AppShell>
       <AppHeader
         title={t("history.title")}
@@ -111,12 +113,12 @@ export default function HistoryScreen() {
                       {formatDate(new Date(h.date))}
                     </p>
                     <span className="inline-flex items-center gap-1 rounded-full bg-primary-soft/60 px-2 py-0.5 text-[9px] font-bold text-primary">
-                      ✓ Supabase Synced
+                      âœ“ Supabase Synced
                     </span>
                   </div>
                   <p className="truncate font-semibold mt-0.5">{h.disease}</p>
                   <p className="text-xs text-muted-foreground">
-                    {h.crop} · Severity:{" "}
+                    {h.crop} Â· Severity:{" "}
                     {h.stage
                       ? ({
                           G0: "Healthy",
@@ -151,5 +153,7 @@ export default function HistoryScreen() {
         )}
       </div>
     </AppShell>
+    </AuthGuard>
   );
 }
+
