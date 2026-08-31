@@ -444,7 +444,7 @@ export default function ArchitectureScreen() {
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis dataKey="epoch" name="Epoch" />
                         <YAxis domain={[50, 100]} unit="%" />
-                        <Tooltip formatter={(value) => [`${value}%`]} />
+                        <Tooltip formatter={(value: any) => [`${value}%`]} />
                         <Legend />
                         <Line
                           type="monotone"

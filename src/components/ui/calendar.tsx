@@ -73,17 +73,17 @@ function Calendar({
             : "[&>svg]:text-muted-foreground flex h-8 items-center gap-1 rounded-md pl-2 pr-1 text-sm [&>svg]:size-3.5",
           defaultClassNames.caption_label,
         ),
-        table: "w-full border-collapse",
+        month_grid: cn("w-full border-collapse", (defaultClassNames as any).month_grid),
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
           "text-muted-foreground flex-1 select-none rounded-md text-[0.8rem] font-normal",
           defaultClassNames.weekday,
         ),
         week: cn("mt-2 flex w-full", defaultClassNames.week),
-        week_number_header: cn("w-(--cell-size) select-none", defaultClassNames.week_number_header),
+        week_number_header: cn("w-(--cell-size) select-none", (defaultClassNames as any).week_number_header),
         week_number: cn(
           "text-muted-foreground select-none text-[0.8rem]",
-          defaultClassNames.week_number,
+          (defaultClassNames as any).week_number,
         ),
         day: cn(
           "group/day relative aspect-square h-full w-full select-none p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md",
@@ -105,10 +105,10 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Root: ({ className, rootRef, ...props }) => {
+        Root: ({ className, rootRef, ...props }: any) => {
           return <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />;
         },
-        Chevron: ({ className, orientation, ...props }) => {
+        Chevron: ({ className, orientation, ...props }: any) => {
           if (orientation === "left") {
             return <ChevronLeftIcon className={cn("size-4", className)} {...props} />;
           }
@@ -120,7 +120,7 @@ function Calendar({
           return <ChevronDownIcon className={cn("size-4", className)} {...props} />;
         },
         DayButton: CalendarDayButton,
-        WeekNumber: ({ children, ...props }) => {
+        WeekNumber: ({ children, ...props }: any) => {
           return (
             <td {...props}>
               <div className="flex size-(--cell-size) items-center justify-center text-center">

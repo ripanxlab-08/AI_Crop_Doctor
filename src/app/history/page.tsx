@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Leaf, Loader2, CloudCheck } from "lucide-react";
+import { ChevronRight, Leaf, Loader2, Cloud } from "lucide-react";
 import { AppShell, AppHeader } from "@/components/app-shell";
 import { ErrorState } from "@/components/crop-ui";
 import { formatDate } from "@/lib/crop-schedule";
