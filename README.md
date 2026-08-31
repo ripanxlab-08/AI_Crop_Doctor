@@ -107,8 +107,8 @@ AI_Crop_Doctor/
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
-- **Node.js**: v18.0.0 or higher
-- **npm** or **yarn**
+- **Bun**: v1.0.0 or higher (`bun --version`)
+- **Node.js**: v18.0.0 or higher (optional fallback)
 - **Python**: v3.10+ (for running ML pipeline scripts or tests)
 
 ### 2. Environment Setup
@@ -150,17 +150,18 @@ CREATE POLICY "Allow select for diagnosis_history" ON public.diagnosis_history F
 CREATE POLICY "Allow insert for diagnosis_history" ON public.diagnosis_history FOR INSERT WITH CHECK (true);
 ```
 
-### 4. Running the Web Application
+### 4. Running the Web Application with Bun
 
-Install Node.js dependencies:
+Install dependencies using Bun:
 ```bash
-npm install
+bun i
 ```
 
-Start the local development server:
+Start the local development server with Bun:
 ```bash
-npm run dev
+bun run dev
 ```
+*(or `bun dev`)*
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
