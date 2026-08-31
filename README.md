@@ -150,18 +150,17 @@ CREATE POLICY "Allow select for diagnosis_history" ON public.diagnosis_history F
 CREATE POLICY "Allow insert for diagnosis_history" ON public.diagnosis_history FOR INSERT WITH CHECK (true);
 ```
 
-### 4. Running the Web Application with Bun
+### 4. Running the Web Application
 
-Install dependencies using Bun:
+Install Node.js dependencies:
 ```bash
-bun i
+npm install
 ```
 
-Start the local development server with Bun:
+Start the local development server:
 ```bash
-bun run dev
+npm run dev
 ```
-*(or `bun dev`)*
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
