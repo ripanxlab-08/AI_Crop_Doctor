@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Bell, CalendarDays, Home, ScanLine, Sprout, User, ChevronLeft, Cpu } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useAppState } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 
 const NAV = [
   { to: "/home", label: "Home", icon: Home },
@@ -191,6 +194,60 @@ export function NotificationBell({ count }: { count: number }) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const { user } = useAppState();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    async function checkAuth() {
+      // 1. First check in-memory store user
+      if (user?.id) {
+        if (mounted) {
+          setIsAuthenticated(true);
+          setCheckingAuth(false);
+        }
+        return;
+      }
+
+      // 2. Check active Supabase session
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        if (mounted) {
+          setIsAuthenticated(true);
+          setCheckingAuth(false);
+        }
+      } else {
+        if (mounted) {
+          setIsAuthenticated(false);
+          setCheckingAuth(false);
+          router.replace("/login");
+        }
+      }
+    }
+
+    checkAuth();
+    return () => {
+      mounted = false;
+    };
+  }, [user, router]);
+
+  if (checkingAuth) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[oklch(0.09_0.018_250)] text-primary">
+        <div className="flex flex-col items-center gap-3">
+          <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          <p className="text-xs font-mono text-muted-foreground">Authenticating session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <div
       className="mx-auto flex min-h-screen w-full max-w-screen-sm flex-col pb-24 relative"
