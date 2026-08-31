@@ -1,5 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
 
@@ -7,83 +8,7 @@
  * AI Crop Doctor — FUTURISTIC BIOPUNK design system.
  * Dark neon bio-tech aesthetic with deep space backgrounds,
  * cyan/emerald neon accents, glassmorphism, 3D card effects.
- * All colors are oklch semantic tokens.
  */
-
-@theme inline {
-  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-
-  --radius-sm: calc(var(--radius) - 6px);
-  --radius-md: calc(var(--radius) - 3px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 6px);
-  --radius-2xl: calc(var(--radius) + 12px);
-  --radius-3xl: calc(var(--radius) + 20px);
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary-soft: var(--primary-soft);
-  --color-primary-glow: var(--primary-glow);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent-soft: var(--accent-soft);
-  --color-accent-glow: var(--accent-glow);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-destructive-soft: var(--destructive-soft);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --color-success-soft: var(--success-soft);
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
-  --color-warning-soft: var(--warning-soft);
-  --color-info: var(--info);
-  --color-info-soft: var(--info-soft);
-  --color-soil: var(--soil);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-neon-cyan: var(--neon-cyan);
-  --color-neon-green: var(--neon-green);
-  --color-neon-amber: var(--neon-amber);
-  --color-glass: var(--glass);
-  --color-glass-border: var(--glass-border);
-
-  --color-stage-1: var(--stage-1);
-  --color-stage-2: var(--stage-2);
-  --color-stage-3: var(--stage-3);
-  --color-stage-4: var(--stage-4);
-  --color-stage-5: var(--stage-5);
-
-  /* Premium 3D & glow shadows */
-  --shadow-soft:
-    0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px -12px oklch(0 0 0 / 0.5),
-    0 0 0 1px oklch(1 0 0 / 0.04);
-  --shadow-lift:
-    0 2px 4px oklch(0 0 0 / 0.4), 0 18px 40px -18px oklch(0 0 0 / 0.6),
-    0 0 0 1px oklch(1 0 0 / 0.06);
-  --shadow-glow-primary:
-    0 0 20px oklch(0.72 0.2 152 / 0.35), 0 0 60px oklch(0.72 0.2 152 / 0.15),
-    0 4px 0 oklch(0.35 0.12 152 / 0.8);
-  --shadow-glow-accent:
-    0 0 20px oklch(0.78 0.18 180 / 0.4), 0 0 60px oklch(0.78 0.18 180 / 0.2);
-  --shadow-card-3d:
-    0 4px 0 oklch(0.15 0.02 152), 0 8px 32px oklch(0 0 0 / 0.5),
-    0 0 0 1px oklch(1 0 0 / 0.08);
-  --shadow-press: inset 0 -1px 0 oklch(1 0 0 / 0.08), inset 0 2px 4px oklch(0 0 0 / 0.3);
-}
 
 :root {
   --radius: 1.25rem;
