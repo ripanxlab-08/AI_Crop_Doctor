@@ -183,7 +183,7 @@ export async function POST(request: NextRequest) {
     const lines = stdout.split("\n");
     let primaryLabel = "";
     let confidence = 0.0;
-    let isLeaf = false;
+    let isLeaf = true;
     const topPredictions: { disease: string; confidence: number }[] = [];
 
     for (const line of lines) {
@@ -194,9 +194,11 @@ export async function POST(request: NextRequest) {
         const pctStr = line.split("Confidence Score:")[1]?.trim() || "";
         confidence = parseFloat(pctStr.replace("%", "")) / 100;
       }
-      if (line.includes("Is Leaf:")) {
-        const valStr = line.split("Is Leaf:")[1]?.trim() || "";
-        isLeaf = valStr.toLowerCase() === "true";
+      if (line.toLowerCase().includes("is leaf:")) {
+        const valStr = line.split(":")[1]?.trim().toLowerCase() || "";
+        if (valStr.includes("false")) {
+          isLeaf = false;
+        }
       }
     }
 
