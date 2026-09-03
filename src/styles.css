@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@custom-variant dark (&:is(.dark *));
-
 /*
  * AI Crop Doctor — FUTURISTIC BIOPUNK design system.
  * Dark neon bio-tech aesthetic with deep space backgrounds,
@@ -152,89 +150,87 @@
   }
 }
 
-/* ── Glassmorphism Surface System ── */
-@utility surface {
-  background: oklch(1 0 0 / 5%);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-soft);
-  border: 1px solid oklch(1 0 0 / 8%);
-}
+/* ── Glassmorphism Surface & Custom Utilities ── */
+@layer utilities {
+  .surface {
+    background: oklch(1 0 0 / 5%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid oklch(1 0 0 / 8%);
+  }
 
-@utility surface-lift {
-  background: oklch(1 0 0 / 6%);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-lift);
-  border: 1px solid oklch(1 0 0 / 10%);
-}
+  .surface-lift {
+    background: oklch(1 0 0 / 6%);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-lift);
+    border: 1px solid oklch(1 0 0 / 10%);
+  }
 
-/* ── 3D Hero Banner ── */
-@utility field-hero {
-  background:
-    radial-gradient(120% 100% at 20% 0%, oklch(0.72 0.2 152 / 0.25) 0%, transparent 55%),
-    radial-gradient(80% 80% at 90% 100%, oklch(0.78 0.18 180 / 0.2) 0%, transparent 50%),
-    linear-gradient(135deg, oklch(0.15 0.04 200) 0%, oklch(0.12 0.03 240) 100%);
-  border: 1px solid oklch(0.72 0.2 152 / 0.3);
-  box-shadow:
-    0 0 40px oklch(0.72 0.2 152 / 0.15),
-    inset 0 1px 0 oklch(1 0 0 / 0.1);
-  color: oklch(0.95 0.015 180);
-}
+  .field-hero {
+    background:
+      radial-gradient(120% 100% at 20% 0%, oklch(0.72 0.2 152 / 0.25) 0%, transparent 55%),
+      radial-gradient(80% 80% at 90% 100%, oklch(0.78 0.18 180 / 0.2) 0%, transparent 50%),
+      linear-gradient(135deg, oklch(0.15 0.04 200) 0%, oklch(0.12 0.03 240) 100%);
+    border: 1px solid oklch(0.72 0.2 152 / 0.3);
+    box-shadow:
+      0 0 40px oklch(0.72 0.2 152 / 0.15),
+      inset 0 1px 0 oklch(1 0 0 / 0.1);
+    color: oklch(0.95 0.015 180);
+  }
 
-/* ── Neon Glow Button ── */
-@utility btn-neon {
-  background: linear-gradient(135deg, oklch(0.72 0.2 152) 0%, oklch(0.65 0.18 165) 100%);
-  color: oklch(0.08 0.02 152);
-  font-weight: 700;
-  border-radius: var(--radius-xl);
-  box-shadow:
-    0 0 20px oklch(0.72 0.2 152 / 0.5),
-    0 4px 0 oklch(0.35 0.12 152),
-    inset 0 1px 0 oklch(1 0 0 / 0.25);
-  transition: all 0.15s ease;
-}
+  .btn-neon {
+    background: linear-gradient(135deg, oklch(0.72 0.2 152) 0%, oklch(0.65 0.18 165) 100%);
+    color: oklch(0.08 0.02 152);
+    font-weight: 700;
+    border-radius: var(--radius-xl);
+    box-shadow:
+      0 0 20px oklch(0.72 0.2 152 / 0.5),
+      0 4px 0 oklch(0.35 0.12 152),
+      inset 0 1px 0 oklch(1 0 0 / 0.25);
+    transition: all 0.15s ease;
+  }
 
-@utility btn-neon-hover {
-  box-shadow:
-    0 0 30px oklch(0.72 0.2 152 / 0.7),
-    0 6px 0 oklch(0.35 0.12 152),
-    inset 0 1px 0 oklch(1 0 0 / 0.25);
-  transform: translateY(-1px);
-}
+  .btn-neon-hover {
+    box-shadow:
+      0 0 30px oklch(0.72 0.2 152 / 0.7),
+      0 6px 0 oklch(0.35 0.12 152),
+      inset 0 1px 0 oklch(1 0 0 / 0.25);
+    transform: translateY(-1px);
+  }
 
-/* ── Holographic shimmer utility ── */
-@utility holographic {
-  background: linear-gradient(
-    135deg,
-    oklch(0.72 0.2 152 / 0.15) 0%,
-    oklch(0.78 0.18 180 / 0.15) 33%,
-    oklch(0.78 0.18 75 / 0.15) 66%,
-    oklch(0.72 0.2 152 / 0.15) 100%
-  );
-  background-size: 300% 300%;
-  animation: holo-shift 6s linear infinite;
-}
+  .holographic {
+    background: linear-gradient(
+      135deg,
+      oklch(0.72 0.2 152 / 0.15) 0%,
+      oklch(0.78 0.18 180 / 0.15) 33%,
+      oklch(0.78 0.18 75 / 0.15) 66%,
+      oklch(0.72 0.2 152 / 0.15) 100%
+    );
+    background-size: 300% 300%;
+    animation: holo-shift 6s linear infinite;
+  }
 
-@utility text-balance-tight {
-  text-wrap: balance;
-}
+  .text-balance-tight {
+    text-wrap: balance;
+  }
 
-/* ── Neon text glow ── */
-@utility text-neon-green {
-  color: oklch(0.72 0.2 152);
-  text-shadow:
-    0 0 10px oklch(0.72 0.2 152 / 0.6),
-    0 0 30px oklch(0.72 0.2 152 / 0.3);
-}
+  .text-neon-green {
+    color: oklch(0.72 0.2 152);
+    text-shadow:
+      0 0 10px oklch(0.72 0.2 152 / 0.6),
+      0 0 30px oklch(0.72 0.2 152 / 0.3);
+  }
 
-@utility text-neon-cyan {
-  color: oklch(0.78 0.18 180);
-  text-shadow:
-    0 0 10px oklch(0.78 0.18 180 / 0.6),
-    0 0 30px oklch(0.78 0.18 180 / 0.3);
+  .text-neon-cyan {
+    color: oklch(0.78 0.18 180);
+    text-shadow:
+      0 0 10px oklch(0.78 0.18 180 / 0.6),
+      0 0 30px oklch(0.78 0.18 180 / 0.3);
+  }
 }
 
 /* ─────────── Keyframe Animations ─────────── */
