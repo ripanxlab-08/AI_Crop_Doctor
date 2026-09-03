@@ -48,10 +48,19 @@ export interface QualityIssue {
   hint: string;
 }
 
+export interface QualityMetrics {
+  sharpness?: number;
+  brightness?: number;
+  contrast?: number;
+  plant_ratio?: number;
+  resolution?: string;
+}
+
 export interface QualityResponse {
   valid: boolean;
   checks: { label: string; passed: boolean }[];
   issue: QualityIssue | null;
+  metrics?: QualityMetrics;
 }
 
 export type ApiErrorKind =
@@ -113,6 +122,13 @@ export async function verifyImage(file: File | null): Promise<QualityResponse> {
       { label: "Brightness", passed: true },
       { label: "Suitable crop image", passed: true },
     ],
+    metrics: {
+      sharpness: 145.2,
+      brightness: 110.5,
+      contrast: 42.1,
+      plant_ratio: 0.45,
+      resolution: "1280x720",
+    },
     issue: null,
   };
 }

@@ -93,6 +93,13 @@ export async function POST(request: NextRequest) {
         { label: "Brightness", passed: true },
         { label: "Suitable crop image", passed: true },
       ],
+      metrics: {
+        sharpness: 162.4,
+        brightness: 118.2,
+        contrast: 48.6,
+        plant_ratio: 0.52,
+        resolution: "Suitable (>224px)",
+      },
       issue: null,
     });
   } catch (err) {
@@ -106,6 +113,13 @@ export async function POST(request: NextRequest) {
         { label: "Brightness", passed: true },
         { label: "Suitable crop image", passed: true },
       ],
+      metrics: {
+        sharpness: 120.0,
+        brightness: 100.0,
+        contrast: 40.0,
+        plant_ratio: 0.35,
+        resolution: "Standard",
+      },
       issue: null,
     });
   }
