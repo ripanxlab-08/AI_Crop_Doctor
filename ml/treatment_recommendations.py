@@ -244,14 +244,14 @@ TREATMENT_MAP: dict[str, dict[str, dict[str, str]]] = {
         },
     },
 
-    # ---------------- CORN ----------------
-    "Corn___healthy": {
+    # ---------------- CORN (MAIZE) ----------------
+    "Corn_(maize)___healthy": {
         "G0": {
             "recommendation": "No treatment needed.",
             "prevention": "Practice crop rotation with non-host crops.",
         },
     },
-    "Corn___Northern_Leaf_Blight": {
+    "Corn_(maize)___Northern_Leaf_Blight": {
         "G1": {
             "recommendation": "Monitor closely; apply fungicide if weather remains humid.",
             "prevention": "Use resistant hybrid seed varieties where available.",
@@ -265,7 +265,7 @@ TREATMENT_MAP: dict[str, dict[str, dict[str, str]]] = {
             "prevention": "Rotate to soybean or other non-host crop next season.",
         },
     },
-    "Corn___Common_rust": {
+    "Corn_(maize)___Common_rust_": {
         "G1": {
             "recommendation": "Monitor; fungicide rarely needed at this stage for resistant hybrids.",
             "prevention": "Plant rust-resistant hybrids where common rust pressure is high.",
@@ -279,7 +279,7 @@ TREATMENT_MAP: dict[str, dict[str, dict[str, str]]] = {
             "prevention": "Select resistant hybrids for future seasons in high-pressure areas.",
         },
     },
-    "Corn___Cercospora_leaf_spot Gray_leaf_spot": {
+    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
         "G1": {
             "recommendation": "Monitor; consider fungicide if continuous corn planting history.",
             "prevention": "Rotate crops; avoid continuous corn-on-corn planting.",
@@ -358,15 +358,25 @@ GENERIC_FALLBACK = {
 }
 
 
+def _normalize_key(key: str) -> str:
+    k = key.strip()
+    if "Corn" in k:
+        if "Cercospora" in k or "Gray_leaf_spot" in k:
+            return "Corn___Cercospora_leaf_spot Gray_leaf_spot"
+        if "Common_rust" in k:
+            return "Corn___Common_rust"
+        if "Northern" in k:
+            return "Corn___Northern_Leaf_Blight"
+        if "healthy" in k:
+            return "Corn___healthy"
+    return k
+
+
 def get_recommendation(disease_class: str, severity_stage: str) -> dict:
     """Steps 14-17: given a model's predicted class + the CV-estimated
     severity stage, return the treatment + prevention text.
-
-    disease_class must be one of the raw class names from
-    supported_crops.all_class_names(). severity_stage is one of
-    'G0'..'G3'.
     """
-    disease_entry = TREATMENT_MAP.get(disease_class)
+    disease_entry = TREATMENT_MAP.get(disease_class) or TREATMENT_MAP.get(_normalize_key(disease_class))
     if disease_entry is None:
         return {**GENERIC_FALLBACK, "matched": False}
 
